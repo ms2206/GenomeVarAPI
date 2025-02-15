@@ -5,6 +5,11 @@
 
 import vcf
 import itertools
+import regex as re
+import logging
+
+# set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
 def get_current_samples() -> list:
     """
@@ -26,8 +31,8 @@ def load_samples_table(metadata: dict) -> None:
     # for testing
     current_samples = ['RF_001', 'RF_041', 'RF_090']
 
-    print(f'Updating SAMPLES table for genome_id: {metadata["genome_id"]}')
-    print(f'Updating SAMPLES table for metadata json: {metadata}')
+    logging.info(f'Updating SAMPLES table for genome_id: {metadata["genome_id"]}')
+    logging.info(f'Updating SAMPLES table for metadata json: {metadata}')
 
     return None
 
@@ -35,6 +40,9 @@ def load_samples_table(metadata: dict) -> None:
 def load_chromosomes_table(record: vcf.model._Record, chr_index: dict) -> None:
     """
     Load the CHROMOSOMES table from records in the VCF file. Using chr_index as index to access start and stop positions.
+
+    param record: vcf.model._Record: record from VCF object.
+    param chr_index: dict: dictionary with chromosome_id as key and start and end positions as values.
     """
 
     #TODO: use a function to check if chromosome_id exists in CHROMOSOMES table
@@ -45,10 +53,61 @@ def load_chromosomes_table(record: vcf.model._Record, chr_index: dict) -> None:
     # extract chromosome_id from CHROM field
     chromosome_id = 'chr' + record.CHROM.split('ch')[1]
 
-    print(f'Updating CHROMOSOMES table for reference: {reference_genome}')
-    print(f'Updating CHROMOSOMES table for chromosome_id: {chromosome_id}')
+    logging.info(f'Updating CHROMOSOMES table for reference: {reference_genome}')
+    logging.info(f'Updating CHROMOSOMES table for chromosome_id: {chromosome_id}')
+    logging.info(f'Updating CHROMOSOMES table for start: {chr_index[record.CHROM]["start"]}')
+    logging.info(f'Updating CHROMOSOMES table for end: {chr_index[record.CHROM]["end"]}')
 
     return None
+
+
+def load_variants_table(record: vcf.model._Record) -> None:
+    """
+    Load the VARIANTS table from records in the VCF file.
+
+    param record: vcf.model._Record: record from VCF object.
+    """
+
+    # extract chromosome_id from CHROM field
+    chromosome_id = 'chr' + record.CHROM.split('ch')[1]
+
+    # set is_SNP bool
+    if len(record.ALT) != 1:
+        is_SNP = 0
+    else:
+        is_SNP = 1
+
+    # extract SnpEff annotation
+    regex = re.compile(r'HIGH|MODERATE|LOW')
+    eff_match = regex.search(record.INFO["EFF"][0])
+    if eff_match:
+        # print('Match')
+        snpEff_match = regex.search(record.INFO["EFF"][0]).group()
+        # print(regex.search(record.INFO["EFF"][0]).group())
+    else:
+        snpEff_match = 'Unknown'
+    
+
+    logging.info(f'Updating VARIANTS table for chromosome_id: {chromosome_id}')
+    logging.info(f'Updating VARIANTS table for POS: {record.POS}')
+    logging.info(f'Updating VARIANTS table for ID: {record.ID}')
+    logging.info(f'Updating VARIANTS table for REF: {record.REF}')
+    logging.info(f'Updating VARIANTS table for ALT: {record.ALT}')
+    logging.info(f'Updating VARIANTS table for is_SNP: {is_SNP}')
+    logging.info(f'Updating VARIANTS table for QUAL: {record.QUAL}')
+    logging.info(f'Updating VARIANTS table for FILTER: {record.FILTER}')
+    logging.info(f'Updating VARIANTS table for INFO: {record.INFO}')
+    logging.info(f'Updating VARIANTS table for FORMAT: {record.FORMAT}')
+    logging.info(f'Updating VARIANTS table for GENOTYPES: {record.samples}')
+    logging.info(f'Updating VARIANTS table for EFF: {record.INFO["EFF"][0]}')
+    logging.info(f'Updating VARIANTS table for genome_id: {record.samples[0].sample}')
+    logging.info(f'Updating VARIANTS table for snpEff: {snpEff_match}')
+    
+
+
+
+
+
 
 
 def import_vcf(vcf_filepath: str) -> vcf.Reader:
@@ -58,6 +117,7 @@ def import_vcf(vcf_filepath: str) -> vcf.Reader:
     return: vcf.Reader: vcf.Reader object
     """
 
+    logging.info(f'Importing VCF file from: {vcf_filepath}')
     vcf_reader = vcf.Reader(open(vcf_filepath, 'r'))
 
     # consume first row to access genome_id from record
@@ -66,11 +126,15 @@ def import_vcf(vcf_filepath: str) -> vcf.Reader:
     # access the genome_id from first record
     genome_id = first_record.samples[0].sample
 
+    logging.info(f'Extracted genome_id: {genome_id} from the first record')
+
     # Rewind the file to the beginning
     vcf_reader = vcf.Reader(open(vcf_filepath, 'r'))
 
     # add genome_id to metadata object
     vcf_reader.metadata['genome_id'] = genome_id
+
+    logging.info('Added genome_id to VCF reader metadata')
 
     return vcf_reader
 
@@ -104,31 +168,13 @@ for record in test_vcf:
     # load_chromosomes_table
     load_chromosomes_table(record, chr_index)
 
-    ## update samples table
-
     # load_samples_table
     load_samples_table(test_vcf.metadata)
 
+    # load_variants_table
+    load_variants_table(record)
+
  
+    logging.info('Processed record')
 
-    # print(f' CHROM: {record.CHROM}')
-    # print(f' POS: {record.POS}')
-    # print(f' ID: {record.ID}')
-    # print(f' REF: {record.REF}')
-    # print(f' ALT: {record.ALT}')
-    # print(f' QUAL: {record.QUAL}')
-    # print(f' FILTER: {record.FILTER}')
-    # print(f' INFO: {record.INFO}')
-    # print(f' EFF: {record.INFO["EFF"][0]}')
-    # print(f' GENOTYPES: {record.samples}')
-    # print(f' GENOME_ID: {record.samples[0].sample}') 
-    
-    print('')
-    
-    
-print(chr_index)
-
-
-# add genome_id to metadata
- 
-
+# TODO: add a function to get list of vcfs in a directory
