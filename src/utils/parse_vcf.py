@@ -31,9 +31,10 @@ def load_samples_table(metadata: dict) -> None:
     return None
 
 
-def load_chromosomes_table(record: vcf.model._Record) -> None:
+def load_chromosomes_ids(record: vcf.model._Record) -> None:
     """
-    Load the CHROMOSOMES table from records in the VCF file.
+    Partially load the CHROMOSOMES table from records in the VCF file. This function will only load the chromosome_id
+    and reference, start, and end positions are not included.
 
     param record: vcf.model._Record: record object from the VCF file
     """
@@ -48,6 +49,7 @@ def load_chromosomes_table(record: vcf.model._Record) -> None:
 
     print(f'Updating CHROMOSOMES table for reference: {reference_genome}')
     print(f'Updating CHROMOSOMES table for chromosome_id: {chromosome_id}')
+
     return None
 
 
@@ -74,15 +76,36 @@ def import_vcf(vcf_filepath: str) -> vcf.Reader:
 
 test_vcf = import_vcf('../../data/raw/RF_001_subset.vcf')
 
+# create index for each choromosomes
+chr_index = dict()
 
 for record in test_vcf:
+
+    # extract the chromosome, start, and end positions
+    chrom = record.CHROM
+    start = record.POS
+    end = start + len(record.REF)
+
+    if chrom not in chr_index:
+        chr_index[chrom] = {'start': start, 'end': end}
+
+    else:
+        # update start if the record start is less than the index start 
+        if start < chr_index[chrom]['start']:
+            chr_index[chrom]['start'] = start
+
+        # update end if the record end is greater than the index end
+        if end > chr_index[chrom]['end']:
+            chr_index[chrom]['end'] = end
+
+
     ## update samples table
 
     # load_samples_table
     load_samples_table(test_vcf.metadata)
 
     # load_chromosomes_table
-    load_chromosomes_table(record)
+    load_chromosomes_ids(record)
 
     # print(f' CHROM: {record.CHROM}')
     # print(f' POS: {record.POS}')
@@ -95,11 +118,11 @@ for record in test_vcf:
     # print(f' EFF: {record.INFO["EFF"][0]}')
     # print(f' GENOTYPES: {record.samples}')
     # print(f' GENOME_ID: {record.samples[0].sample}') 
-
+    
     print('')
-    break
     
     
+print(chr_index)
 
 
 # add genome_id to metadata
