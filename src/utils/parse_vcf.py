@@ -4,6 +4,7 @@
 # pip install pyvcf
 
 import vcf
+import itertools
 
 def get_current_samples() -> list:
     """
@@ -31,12 +32,9 @@ def load_samples_table(metadata: dict) -> None:
     return None
 
 
-def load_chromosomes_ids(record: vcf.model._Record) -> None:
+def load_chromosomes_table(record: vcf.model._Record, chr_index: dict) -> None:
     """
-    Partially load the CHROMOSOMES table from records in the VCF file. This function will only load the chromosome_id
-    and reference, start, and end positions are not included.
-
-    param record: vcf.model._Record: record object from the VCF file
+    Load the CHROMOSOMES table from records in the VCF file. Using chr_index as index to access start and stop positions.
     """
 
     #TODO: use a function to check if chromosome_id exists in CHROMOSOMES table
@@ -62,19 +60,22 @@ def import_vcf(vcf_filepath: str) -> vcf.Reader:
 
     vcf_reader = vcf.Reader(open(vcf_filepath, 'r'))
 
-    # add genome_id to metadata object
+    # consume first row to access genome_id from record
     first_record = next(vcf_reader)
 
-    # access the first record
+    # access the genome_id from first record
     genome_id = first_record.samples[0].sample
 
-    # add genome_id to metadata
+    # Rewind the file to the beginning
+    vcf_reader = vcf.Reader(open(vcf_filepath, 'r'))
+
+    # add genome_id to metadata object
     vcf_reader.metadata['genome_id'] = genome_id
 
     return vcf_reader
 
 
-test_vcf = import_vcf('../../data/raw/RF_001_subset.vcf')
+test_vcf = import_vcf('./data/raw/RF_001_subset.vcf')
 
 # create index for each choromosomes
 chr_index = dict()
@@ -84,7 +85,8 @@ for record in test_vcf:
     # extract the chromosome, start, and end positions
     chrom = record.CHROM
     start = record.POS
-    end = start + len(record.REF)
+    # calculate end as start position plus length (-1 python is inclusive).
+    end = start + len(record.REF) - 1
 
     if chrom not in chr_index:
         chr_index[chrom] = {'start': start, 'end': end}
@@ -95,17 +97,19 @@ for record in test_vcf:
             chr_index[chrom]['start'] = start
 
         # update end if the record end is greater than the index end
-        if end > chr_index[chrom]['end']:
+        if end >= chr_index[chrom]['end']:
             chr_index[chrom]['end'] = end
 
+
+    # load_chromosomes_table
+    load_chromosomes_table(record, chr_index)
 
     ## update samples table
 
     # load_samples_table
     load_samples_table(test_vcf.metadata)
 
-    # load_chromosomes_table
-    load_chromosomes_ids(record)
+ 
 
     # print(f' CHROM: {record.CHROM}')
     # print(f' POS: {record.POS}')
