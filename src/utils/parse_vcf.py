@@ -90,26 +90,28 @@ def import_vcf(vcf_filepath: str) -> vcf.Reader:
     return vcf_reader
 
 
-def check_unique_constaints(table: str, column: str) -> set:
+def check_unique_constaints(table: str, cols: list) -> list:
     """
-    Function to pass in a table and a column from db_vcf and return the UNIQUE rows.
+    Function to pass in a table and a list of columns from db_vcf and return the UNIQUE rows.
 
     param table: str: table name
-    param column: str: column name
+    param cols: list: column names
     
-    return: set: set of unique values in the column
+    return: list: list of tuples of unique values in the column
     """
    
+    col_csv = ', '.join(cols)
+
     # query to get unique values from a column
     qry = f"""
-            SELECT DISTINCT {column}
+            SELECT DISTINCT {col_csv}
             FROM {table}
             """
     
     qry_result = conn.execute(qry)
 
     # set comprehension to get unique values
-    unique_rows = set(r[0] for r in qry_result)
+    unique_rows = qry_result.fetchall()
 
     return unique_rows
 
@@ -179,13 +181,14 @@ def load_genomes_table(metadata: dict) -> None:
     param metadata: dict: metadata object from the VCF file
     """
 
-    #TODO: use a function to check if genome_id exists in GENOMES table
-    current_samples = check_unique_constaints('genomes', 'genome_id')
-    logger.warning(f'current_samples: {current_samples}')
-    # for testing
-    #current_samples = ['RF_001', 'RF_041', 'RF_090']
+    # get current genomes from GENOMES table
+    current_genomes_list_of_tuples = check_unique_constaints('genomes', ['genome_id'])
+    current_genomes = [g[0] for g in current_genomes_list_of_tuples]
 
-    if metadata["genome_id"] not in current_samples:
+    logger.info(f'current_genomes: {current_genomes}')
+
+
+    if metadata["genome_id"] not in current_genomes:
 
         logger.info(f'Updating GENOMES table for genome_id: {metadata["genome_id"]}')
         logger.info(f'Updating GENOMES table for metadata json: \'{json.dumps(metadata)}\'')
@@ -206,11 +209,6 @@ def load_genomes_table(metadata: dict) -> None:
     else:
         logger.info(f'Skipping GENOMES table for genome_id: {metadata["genome_id"]}')
         
-    
-
-
-
-
     return None
 
 
