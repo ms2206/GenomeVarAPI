@@ -4,12 +4,19 @@ import regex as re
 import logging
 import os
 
+# set logger at global scope
+logger = logging.getLogger()
+
+#################
+### FUNCTIONS ###
+#################
+
 def setup_logging(log_file: str):
     """
     Set up logging configuration.
     """
 
-    logger = logging.getLogger()
+    
     logger.setLevel(logging.DEBUG)
 
     file_handler = logging.FileHandler(log_file, mode='w')
@@ -31,8 +38,6 @@ def setup_logging(log_file: str):
     # logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
-
-
 def get_vcf_files(dir: str = './data/raw'):
     """
     Get a list of VCF files in a directory.
@@ -48,30 +53,77 @@ def get_vcf_files(dir: str = './data/raw'):
     return vcf_files
 
 
-def get_current_samples() -> list:
+def import_vcf(vcf_filepath: str) -> vcf.Reader:
+    """
+    Import a VCF file and return a vcf.Reader object with the genome_id added to the metadata object.
+    param vcf_filepath: str: path to the VCF file
+    return: vcf.Reader: vcf.Reader object
+    """
+
+    logger.info(f'Importing VCF file from: {vcf_filepath}')
+    vcf_reader = vcf.Reader(open(vcf_filepath, 'r'))
+
+    # consume first row to access genome_id from record
+    first_record = next(vcf_reader)
+
+    # access the genome_id from first record
+    genome_id = first_record.samples[0].sample
+
+    logger.info(f'Extracted genome_id: {genome_id} from the first record')
+
+    # Rewind the file to the beginning
+    vcf_reader = vcf.Reader(open(vcf_filepath, 'r'))
+
+    # add genome_id to metadata object
+    vcf_reader.metadata['genome_id'] = genome_id
+
+    logger.info('Added genome_id to VCF reader metadata')
+
+    return vcf_reader
+
+
+def check_unique_constaints() -> list:
     """
     Get the current samples in the SAMPLES table.
     return: list: list of current samples
+
+    Might be able to make a generic call to the database to return all columns htat are primary keys then save this object...
     """
+    #TODO: implement function can I make it generic, pass in key and check if it exists in <ANY> table passed?
     pass
 
 
-def load_samples_table(metadata: dict) -> None:
+def make_chromosome_index(record: vcf.model._Record) -> dict:
     """
-    Load the SAMPLES table from records in the VCF file.
+    Make an index of the start and end positions for each chromosome in the VCF file.
 
-    param metadata: dict: metadata object from the VCF file
+    param record: vcf.model._Record: record from VCF object.
+    return: dict: dictionary with chromosome_id as key and start and end positions as values.
     """
 
-    #TODO: use a function to check if genome_id exists in SAMPLES table
-    current_samples = get_current_samples()
-    # for testing
-    current_samples = ['RF_001', 'RF_041', 'RF_090']
+    # create index for each choromosomes
+    chr_index = dict()
+    
+    # extract the chromosome, start, and end positions
+    chrom = record.CHROM
+    start = record.POS
 
-    logger.info(f'Updating SAMPLES table for genome_id: {metadata["genome_id"]}')
-    logger.info(f'Updating SAMPLES table for metadata json: {metadata}')
+    # calculate end as start position plus length (-1 python is inclusive).
+    end = start + len(record.REF) - 1
 
-    return None
+    if chrom not in chr_index:
+        chr_index[chrom] = {'start': start, 'end': end}
+
+    else:
+        # update start if the record start is less than the index start 
+        if start < chr_index[chrom]['start']:
+            chr_index[chrom]['start'] = start
+
+        # update end if the record end is greater than the index end
+        if end >= chr_index[chrom]['end']:
+            chr_index[chrom]['end'] = end
+
+    return chr_index
 
 
 def load_chromosomes_table(record: vcf.model._Record, chr_index: dict) -> None:
@@ -97,35 +149,23 @@ def load_chromosomes_table(record: vcf.model._Record, chr_index: dict) -> None:
 
     return None
 
-def make_chromosome_index(record: vcf.model._Record) -> dict:
+
+def load_samples_table(metadata: dict) -> None:
     """
-    Make an index of the start and end positions for each chromosome in the VCF file.
+    Load the SAMPLES table from records in the VCF file.
 
-    param record: vcf.model._Record: record from VCF object.
-    return: dict: dictionary with chromosome_id as key and start and end positions as values.
+    param metadata: dict: metadata object from the VCF file
     """
 
-    # extract the chromosome, start, and end positions
-    chrom = record.CHROM
-    start = record.POS
+    #TODO: use a function to check if genome_id exists in SAMPLES table
+    current_samples = check_unique_constaints()
+    # for testing
+    current_samples = ['RF_001', 'RF_041', 'RF_090']
 
-    # calculate end as start position plus length (-1 python is inclusive).
-    end = start + len(record.REF) - 1
+    logger.info(f'Updating SAMPLES table for genome_id: {metadata["genome_id"]}')
+    logger.info(f'Updating SAMPLES table for metadata json: {metadata}')
 
-    if chrom not in chr_index:
-        chr_index[chrom] = {'start': start, 'end': end}
-
-    else:
-        # update start if the record start is less than the index start 
-        if start < chr_index[chrom]['start']:
-            chr_index[chrom]['start'] = start
-
-        # update end if the record end is greater than the index end
-        if end >= chr_index[chrom]['end']:
-            chr_index[chrom]['end'] = end
-
-    return chr_index
-
+    return None
 
 
 def load_variants_table(record: vcf.model._Record, line_number) -> None:
@@ -189,80 +229,51 @@ def load_variants_table(record: vcf.model._Record, line_number) -> None:
 
     logger.info(f'Updating VARIANTS table for genome_id: {record.samples[0].sample}')
     
-    
 
-
-def import_vcf(vcf_filepath: str) -> vcf.Reader:
-    """
-    Import a VCF file and return a vcf.Reader object with the genome_id added to the metadata object.
-    param vcf_filepath: str: path to the VCF file
-    return: vcf.Reader: vcf.Reader object
-    """
-
-    logger.info(f'Importing VCF file from: {vcf_filepath}')
-    vcf_reader = vcf.Reader(open(vcf_filepath, 'r'))
-
-    # consume first row to access genome_id from record
-    first_record = next(vcf_reader)
-
-    # access the genome_id from first record
-    genome_id = first_record.samples[0].sample
-
-    logger.info(f'Extracted genome_id: {genome_id} from the first record')
-
-    # Rewind the file to the beginning
-    vcf_reader = vcf.Reader(open(vcf_filepath, 'r'))
-
-    # add genome_id to metadata object
-    vcf_reader.metadata['genome_id'] = genome_id
-
-    logger.info('Added genome_id to VCF reader metadata')
-
-    return vcf_reader
-
-
-#test_vcf = import_vcf('./data/raw/RF_001_subset.vcf')
 ############
 ### MAIN ###
 ############
-logger = setup_logging('./src/utils/parse_vcf.log')
 
-for vcf_filepath in get_vcf_files():
+def main():
+    
+    # configure logging
+    logger = setup_logging('./src/utils/parse_vcf.log')
 
-    # import VCF file
-    vcf_file = import_vcf(vcf_filepath)    
+    # get VCF files
+    for vcf_filepath in get_vcf_files():
 
-    # create index for each choromosomes
-    chr_index = dict()
+        # import specific VCF file
+        vcf_file = import_vcf(vcf_filepath)    
 
-    # initialize a line number counter
-    line_number = 0
+        # initialize a line number counter
+        line_number = 0
 
-    for record in vcf_file:
+        for record in vcf_file:
 
-        # Log the line number of the current record
-        line_number += 1
-        logger.info(f'Processing record at line number: {line_number}')
+            # Log the line number of the current record
+            line_number += 1
+            logger.info(f'Processing record at line number: {line_number}')
 
-        # create chromosome index
-        chr_index = make_chromosome_index(record)
+            # create chromosome index specific to the vcf file
+            chr_index = make_chromosome_index(record)
 
-        # load_chromosomes_table
-        if chr_index:
-            load_chromosomes_table(record, chr_index)
-        else:
-            logger.info('No chromosome index found')
-            raise ValueError('No chromosome index found')
+            # load_chromosomes_table
+            if chr_index:
+                load_chromosomes_table(record, chr_index)
+            else:
+                logger.info('No chromosome index found')
+                raise ValueError('No chromosome index found')
 
-        # load_samples_table
-        load_samples_table(vcf_file.metadata)
+            # load_samples_table
+            load_samples_table(vcf_file.metadata)
 
-        # load_variants_table
-        load_variants_table(record, line_number)
+            # load_variants_table
+            load_variants_table(record, line_number)
 
-        logger.info('Processed record')
+            logger.info('Processed record')
 
-    logger.info(f'Processed {line_number} records for {vcf_file.metadata["genome_id"]}.')
+        logger.info(f'Processed {line_number} records for {vcf_file.metadata["genome_id"]}.')
 
 
-
+if __name__ == '__main__':
+    main()
