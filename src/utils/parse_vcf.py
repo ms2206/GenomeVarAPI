@@ -7,9 +7,24 @@ import vcf
 import itertools
 import regex as re
 import logging
+import os
 
 # set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+
+def get_vcf_files(dir: str = './data/raw'):
+    """
+    Get a list of VCF files in a directory.
+
+    param directory: str: path to the directory containing VCF files.
+    return: set: set of VCF files in the directory.
+    """
+    vcf_files = set()
+    for vcf in os.listdir(dir):
+        if vcf.endswith('.vcf'):
+            vcf_files.add(vcf)
+    return vcf_files
+
 
 def get_current_samples() -> list:
     """
@@ -60,6 +75,36 @@ def load_chromosomes_table(record: vcf.model._Record, chr_index: dict) -> None:
 
     return None
 
+def make_chromosome_index(record: vcf.model._Record) -> dict:
+    """
+    Make an index of the start and end positions for each chromosome in the VCF file.
+
+    param record: vcf.model._Record: record from VCF object.
+    return: dict: dictionary with chromosome_id as key and start and end positions as values.
+    """
+
+    # extract the chromosome, start, and end positions
+    chrom = record.CHROM
+    start = record.POS
+
+    # calculate end as start position plus length (-1 python is inclusive).
+    end = start + len(record.REF) - 1
+
+    if chrom not in chr_index:
+        chr_index[chrom] = {'start': start, 'end': end}
+
+    else:
+        # update start if the record start is less than the index start 
+        if start < chr_index[chrom]['start']:
+            chr_index[chrom]['start'] = start
+
+        # update end if the record end is greater than the index end
+        if end >= chr_index[chrom]['end']:
+            chr_index[chrom]['end'] = end
+
+    return chr_index
+
+
 
 def load_variants_table(record: vcf.model._Record) -> None:
     """
@@ -105,11 +150,6 @@ def load_variants_table(record: vcf.model._Record) -> None:
     
 
 
-
-
-
-
-
 def import_vcf(vcf_filepath: str) -> vcf.Reader:
     """
     Import a VCF file and return a vcf.Reader object with the genome_id added to the metadata object.
@@ -146,27 +186,15 @@ chr_index = dict()
 
 for record in test_vcf:
 
-    # extract the chromosome, start, and end positions
-    chrom = record.CHROM
-    start = record.POS
-    # calculate end as start position plus length (-1 python is inclusive).
-    end = start + len(record.REF) - 1
-
-    if chrom not in chr_index:
-        chr_index[chrom] = {'start': start, 'end': end}
-
-    else:
-        # update start if the record start is less than the index start 
-        if start < chr_index[chrom]['start']:
-            chr_index[chrom]['start'] = start
-
-        # update end if the record end is greater than the index end
-        if end >= chr_index[chrom]['end']:
-            chr_index[chrom]['end'] = end
-
+    # create chromosome index
+    chr_index = make_chromosome_index(record)
 
     # load_chromosomes_table
-    load_chromosomes_table(record, chr_index)
+    if chr_index:
+        load_chromosomes_table(record, chr_index)
+    else:
+        logging.info('No chromosome index found')
+        raise ValueError('No chromosome index found')
 
     # load_samples_table
     load_samples_table(test_vcf.metadata)
@@ -177,4 +205,5 @@ for record in test_vcf:
  
     logging.info('Processed record')
 
-# TODO: add a function to get list of vcfs in a directory
+
+
