@@ -265,8 +265,9 @@ for vcf_filepath in get_vcf_files():
         # load_variants_table
         load_variants_table(record, line_number)
 
-    
         logger.info('Processed record')
+
+    logger.info(f'Processed {line_number} records for {vcf_file.metadata["genome_id"]}.')
 
 
 
