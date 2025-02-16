@@ -3,9 +3,17 @@ import itertools
 import regex as re
 import logging
 import os
+import json
+import sqlite3
 
 # set logger at global scope
 logger = logging.getLogger()
+
+# set up database connection
+conn = sqlite3.connect('./src/db/vcf_db.sqlite3')
+
+# set up cursor
+cursor = conn.cursor()
 
 #################
 ### FUNCTIONS ###
@@ -22,7 +30,7 @@ def setup_logging(log_file: str):
     file_handler = logging.FileHandler(log_file, mode='w')
 
     # set the level of the file handler
-    file_handler.setLevel(logging.WARNING)
+    file_handler.setLevel(logging.INFO)
     log_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
     file_handler.setFormatter(log_format)
 
@@ -82,15 +90,29 @@ def import_vcf(vcf_filepath: str) -> vcf.Reader:
     return vcf_reader
 
 
-def check_unique_constaints() -> list:
+def check_unique_constaints(table: str, column: str) -> set:
     """
-    Get the current samples in the GENOMES table.
-    return: list: list of current samples
+    Function to pass in a table and a column from db_vcf and return the UNIQUE rows.
 
-    Might be able to make a generic call to the database to return all columns htat are primary keys then save this object...
+    param table: str: table name
+    param column: str: column name
+    
+    return: set: set of unique values in the column
     """
-    #TODO: implement function can I make it generic, pass in key and check if it exists in <ANY> table passed?
-    pass
+   
+    # query to get unique values from a column
+    qry = f"""
+            SELECT DISTINCT {column}
+            FROM {table}
+            """
+    
+    qry_result = conn.execute(qry)
+
+    # set comprehension to get unique values
+    unique_rows = set(r[0] for r in qry_result)
+
+    return unique_rows
+
 
 
 def make_chromosome_index(record: vcf.model._Record) -> dict:
@@ -150,7 +172,7 @@ def load_chromosomes_table(record: vcf.model._Record, chr_index: dict) -> None:
     return None
 
 
-def load_samples_table(metadata: dict) -> None:
+def load_genomes_table(metadata: dict) -> None:
     """
     Load the GENOMES table from records in the VCF file.
 
@@ -158,12 +180,32 @@ def load_samples_table(metadata: dict) -> None:
     """
 
     #TODO: use a function to check if genome_id exists in GENOMES table
-    current_samples = check_unique_constaints()
+    current_samples = check_unique_constaints('genomes', 'genome_id')
+    logger.warning(f'current_samples: {current_samples}')
     # for testing
-    current_samples = ['RF_001', 'RF_041', 'RF_090']
+    #current_samples = ['RF_001', 'RF_041', 'RF_090']
 
-    logger.info(f'Updating GENOMES table for genome_id: {metadata["genome_id"]}')
-    logger.info(f'Updating GENOMES table for metadata json: {metadata}')
+    if metadata["genome_id"] not in current_samples:
+
+        logger.info(f'Updating GENOMES table for genome_id: {metadata["genome_id"]}')
+        logger.info(f'Updating GENOMES table for metadata json: \'{json.dumps(metadata)}\'')
+
+        # update GENOMES table
+        qry = """
+                INSERT INTO genomes (genome_id, metadata_json)
+                VALUES 
+                (?, ?)
+                """
+    else:
+        logger.info(f'Skipping GENOMES table for genome_id: {metadata["genome_id"]}')
+        
+    
+    #conn.execute(qry, (metadata["genome_id"], json.dumps(metadata)))
+    
+    #conn.commit()
+    #logger.info(f'Database commit successful')
+
+
 
     return None
 
@@ -213,20 +255,20 @@ def load_variants_table(record: vcf.model._Record, line_number) -> None:
     logger.info(f'Updating VARIANTS table for ID: {record.ID}')
     logger.info(f'Updating VARIANTS table for REF: {record.REF}')
     logger.info(f'Updating VARIANTS table for ALT: {record.ALT}')
-    logger.info(f'Updating VARIANTS table for is_SNP: {is_SNP}')
     logger.info(f'Updating VARIANTS table for QUAL: {record.QUAL}')
     logger.info(f'Updating VARIANTS table for FILTER: {record.FILTER}')
-    logger.info(f'Updating VARIANTS table for INFO: {record.INFO}')
+    logger.info(f'Updating VARIANTS table for INFO: \'{json.dumps(record.INFO)}\'')
     logger.info(f'Updating VARIANTS table for FORMAT: {record.FORMAT}')
     logger.info(f'Updating VARIANTS table for GENOTYPES: {record.samples}')
 
     if snpEff_match:
-        logger.info(f'Updating VARIANTS table for EFF: {record.INFO["EFF"][0]}')
+        # logger.info(f'Updating VARIANTS table for EFF: {record.INFO["EFF"][0]}')
         logger.info(f'Updating VARIANTS table for snpEff: {snpEff_match}')
     else:
-        logger.info(f'Skipping VARIANTS table for EFF')
+        # logger.info(f'Skipping VARIANTS table for EFF')
         logger.info(f'Skipping VARIANTS table for snpEff')
-
+    
+    logger.info(f'Updating VARIANTS table for is_SNP: {is_SNP}')
     logger.info(f'Updating VARIANTS table for genome_id: {record.samples[0].sample}')
     
 
@@ -265,7 +307,7 @@ def main():
                 raise ValueError('No chromosome index found')
 
             # load_samples_table
-            load_samples_table(vcf_file.metadata)
+            load_genomes_table(vcf_file.metadata)
 
             # load_variants_table
             load_variants_table(record, line_number)
@@ -274,6 +316,8 @@ def main():
 
         logger.info(f'Processed {line_number} records for {vcf_file.metadata["genome_id"]}.')
 
+    # close the database connection
+    conn.close()
 
 if __name__ == '__main__':
     main()
