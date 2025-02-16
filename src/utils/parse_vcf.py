@@ -190,20 +190,24 @@ def load_genomes_table(metadata: dict) -> None:
         logger.info(f'Updating GENOMES table for genome_id: {metadata["genome_id"]}')
         logger.info(f'Updating GENOMES table for metadata json: \'{json.dumps(metadata)}\'')
 
-        # update GENOMES table
+         # update GENOMES table
         qry = """
                 INSERT INTO genomes (genome_id, metadata_json)
                 VALUES 
                 (?, ?)
                 """
+
+        conn.execute(qry, (metadata["genome_id"], json.dumps(metadata)))
+    
+        conn.commit()
+        logger.info(f'Database commit successful')
+
+
     else:
         logger.info(f'Skipping GENOMES table for genome_id: {metadata["genome_id"]}')
         
     
-    #conn.execute(qry, (metadata["genome_id"], json.dumps(metadata)))
-    
-    #conn.commit()
-    #logger.info(f'Database commit successful')
+
 
 
 
