@@ -1,8 +1,3 @@
-# conda create --name genomeVarAPI_pyenv_3.9 python=3.9
-# conda activate genomeVarAPI_pyenv_3.9
-# pip install "setuptools<58" --upgrade
-# pip install pyvcf
-
 import vcf
 import itertools
 import regex as re
