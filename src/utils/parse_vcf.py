@@ -116,7 +116,6 @@ def check_unique_constaints(table: str, cols: list) -> list:
     return unique_rows
 
 
-
 def make_chromosome_index(record: vcf.model._Record) -> dict:
     """
     Make an index of the start and end positions for each chromosome in the VCF file.
