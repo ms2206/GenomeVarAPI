@@ -9,8 +9,34 @@ import regex as re
 import logging
 import os
 
-# set up logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+def setup_logging(log_file: str):
+    """
+    Set up logging configuration.
+    """
+
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+
+    file_handler = logging.FileHandler(log_file, mode='w')
+
+    # set the level of the file handler
+    file_handler.setLevel(logging.WARNING)
+    log_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+    file_handler.setFormatter(log_format)
+
+    logger.addHandler(file_handler)
+
+    return logger
+
+
+
+
+
+    # # set up logging
+    # logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+
+
 
 def get_vcf_files(dir: str = './data/raw'):
     """
@@ -22,7 +48,8 @@ def get_vcf_files(dir: str = './data/raw'):
     vcf_files = set()
     for vcf in os.listdir(dir):
         if vcf.endswith('.vcf'):
-            vcf_files.add(vcf)
+            full_path = os.path.join(dir, vcf)
+            vcf_files.add(full_path)
     return vcf_files
 
 
@@ -46,8 +73,8 @@ def load_samples_table(metadata: dict) -> None:
     # for testing
     current_samples = ['RF_001', 'RF_041', 'RF_090']
 
-    logging.info(f'Updating SAMPLES table for genome_id: {metadata["genome_id"]}')
-    logging.info(f'Updating SAMPLES table for metadata json: {metadata}')
+    logger.info(f'Updating SAMPLES table for genome_id: {metadata["genome_id"]}')
+    logger.info(f'Updating SAMPLES table for metadata json: {metadata}')
 
     return None
 
@@ -68,10 +95,10 @@ def load_chromosomes_table(record: vcf.model._Record, chr_index: dict) -> None:
     # extract chromosome_id from CHROM field
     chromosome_id = 'chr' + record.CHROM.split('ch')[1]
 
-    logging.info(f'Updating CHROMOSOMES table for reference: {reference_genome}')
-    logging.info(f'Updating CHROMOSOMES table for chromosome_id: {chromosome_id}')
-    logging.info(f'Updating CHROMOSOMES table for start: {chr_index[record.CHROM]["start"]}')
-    logging.info(f'Updating CHROMOSOMES table for end: {chr_index[record.CHROM]["end"]}')
+    logger.info(f'Updating CHROMOSOMES table for reference: {reference_genome}')
+    logger.info(f'Updating CHROMOSOMES table for chromosome_id: {chromosome_id}')
+    logger.info(f'Updating CHROMOSOMES table for start: {chr_index[record.CHROM]["start"]}')
+    logger.info(f'Updating CHROMOSOMES table for end: {chr_index[record.CHROM]["end"]}')
 
     return None
 
@@ -106,7 +133,7 @@ def make_chromosome_index(record: vcf.model._Record) -> dict:
 
 
 
-def load_variants_table(record: vcf.model._Record) -> None:
+def load_variants_table(record: vcf.model._Record, line_number) -> None:
     """
     Load the VARIANTS table from records in the VCF file.
 
@@ -124,29 +151,49 @@ def load_variants_table(record: vcf.model._Record) -> None:
 
     # extract SnpEff annotation
     regex = re.compile(r'HIGH|MODERATE|LOW')
-    eff_match = regex.search(record.INFO["EFF"][0])
+    
+    try:
+        eff_match = regex.search(record.INFO["EFF"][0])
+
+    except KeyError as e:
+
+        eff_match = None
+        logger.warning(
+            f'No SnpEff annotation found for {record.INFO} '
+            f'on line {line_number} of the VCF file (excluding header and metadata).'
+            f'KeyError: {e}'
+        )
+        
+
     if eff_match:
-        # print('Match')
         snpEff_match = regex.search(record.INFO["EFF"][0]).group()
-        # print(regex.search(record.INFO["EFF"][0]).group())
+
     else:
-        snpEff_match = 'Unknown'
+        # empty dict is falsey but retains the same type
+        snpEff_match = dict()
     
 
-    logging.info(f'Updating VARIANTS table for chromosome_id: {chromosome_id}')
-    logging.info(f'Updating VARIANTS table for POS: {record.POS}')
-    logging.info(f'Updating VARIANTS table for ID: {record.ID}')
-    logging.info(f'Updating VARIANTS table for REF: {record.REF}')
-    logging.info(f'Updating VARIANTS table for ALT: {record.ALT}')
-    logging.info(f'Updating VARIANTS table for is_SNP: {is_SNP}')
-    logging.info(f'Updating VARIANTS table for QUAL: {record.QUAL}')
-    logging.info(f'Updating VARIANTS table for FILTER: {record.FILTER}')
-    logging.info(f'Updating VARIANTS table for INFO: {record.INFO}')
-    logging.info(f'Updating VARIANTS table for FORMAT: {record.FORMAT}')
-    logging.info(f'Updating VARIANTS table for GENOTYPES: {record.samples}')
-    logging.info(f'Updating VARIANTS table for EFF: {record.INFO["EFF"][0]}')
-    logging.info(f'Updating VARIANTS table for genome_id: {record.samples[0].sample}')
-    logging.info(f'Updating VARIANTS table for snpEff: {snpEff_match}')
+    logger.info(f'Updating VARIANTS table for chromosome_id: {chromosome_id}')
+    logger.info(f'Updating VARIANTS table for POS: {record.POS}')
+    logger.info(f'Updating VARIANTS table for ID: {record.ID}')
+    logger.info(f'Updating VARIANTS table for REF: {record.REF}')
+    logger.info(f'Updating VARIANTS table for ALT: {record.ALT}')
+    logger.info(f'Updating VARIANTS table for is_SNP: {is_SNP}')
+    logger.info(f'Updating VARIANTS table for QUAL: {record.QUAL}')
+    logger.info(f'Updating VARIANTS table for FILTER: {record.FILTER}')
+    logger.info(f'Updating VARIANTS table for INFO: {record.INFO}')
+    logger.info(f'Updating VARIANTS table for FORMAT: {record.FORMAT}')
+    logger.info(f'Updating VARIANTS table for GENOTYPES: {record.samples}')
+
+    if snpEff_match:
+        logger.info(f'Updating VARIANTS table for EFF: {record.INFO["EFF"][0]}')
+        logger.info(f'Updating VARIANTS table for snpEff: {snpEff_match}')
+    else:
+        logger.info(f'Skipping VARIANTS table for EFF')
+        logger.info(f'Skipping VARIANTS table for snpEff')
+
+    logger.info(f'Updating VARIANTS table for genome_id: {record.samples[0].sample}')
+    
     
 
 
@@ -157,7 +204,7 @@ def import_vcf(vcf_filepath: str) -> vcf.Reader:
     return: vcf.Reader: vcf.Reader object
     """
 
-    logging.info(f'Importing VCF file from: {vcf_filepath}')
+    logger.info(f'Importing VCF file from: {vcf_filepath}')
     vcf_reader = vcf.Reader(open(vcf_filepath, 'r'))
 
     # consume first row to access genome_id from record
@@ -166,7 +213,7 @@ def import_vcf(vcf_filepath: str) -> vcf.Reader:
     # access the genome_id from first record
     genome_id = first_record.samples[0].sample
 
-    logging.info(f'Extracted genome_id: {genome_id} from the first record')
+    logger.info(f'Extracted genome_id: {genome_id} from the first record')
 
     # Rewind the file to the beginning
     vcf_reader = vcf.Reader(open(vcf_filepath, 'r'))
@@ -174,36 +221,52 @@ def import_vcf(vcf_filepath: str) -> vcf.Reader:
     # add genome_id to metadata object
     vcf_reader.metadata['genome_id'] = genome_id
 
-    logging.info('Added genome_id to VCF reader metadata')
+    logger.info('Added genome_id to VCF reader metadata')
 
     return vcf_reader
 
 
-test_vcf = import_vcf('./data/raw/RF_001_subset.vcf')
+#test_vcf = import_vcf('./data/raw/RF_001_subset.vcf')
+############
+### MAIN ###
+############
+logger = setup_logging('./src/utils/parse_vcf.log')
 
-# create index for each choromosomes
-chr_index = dict()
+for vcf_filepath in get_vcf_files():
 
-for record in test_vcf:
+    # import VCF file
+    vcf_file = import_vcf(vcf_filepath)    
 
-    # create chromosome index
-    chr_index = make_chromosome_index(record)
+    # create index for each choromosomes
+    chr_index = dict()
 
-    # load_chromosomes_table
-    if chr_index:
-        load_chromosomes_table(record, chr_index)
-    else:
-        logging.info('No chromosome index found')
-        raise ValueError('No chromosome index found')
+    # initialize a line number counter
+    line_number = 0
 
-    # load_samples_table
-    load_samples_table(test_vcf.metadata)
+    for record in vcf_file:
 
-    # load_variants_table
-    load_variants_table(record)
+        # Log the line number of the current record
+        line_number += 1
+        logger.info(f'Processing record at line number: {line_number}')
 
- 
-    logging.info('Processed record')
+        # create chromosome index
+        chr_index = make_chromosome_index(record)
+
+        # load_chromosomes_table
+        if chr_index:
+            load_chromosomes_table(record, chr_index)
+        else:
+            logger.info('No chromosome index found')
+            raise ValueError('No chromosome index found')
+
+        # load_samples_table
+        load_samples_table(vcf_file.metadata)
+
+        # load_variants_table
+        load_variants_table(record, line_number)
+
+    
+        logger.info('Processed record')
 
 
 
