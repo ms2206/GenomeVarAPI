@@ -84,7 +84,7 @@ def import_vcf(vcf_filepath: str) -> vcf.Reader:
 
 def check_unique_constaints() -> list:
     """
-    Get the current samples in the SAMPLES table.
+    Get the current samples in the GENOMES table.
     return: list: list of current samples
 
     Might be able to make a generic call to the database to return all columns htat are primary keys then save this object...
@@ -152,18 +152,18 @@ def load_chromosomes_table(record: vcf.model._Record, chr_index: dict) -> None:
 
 def load_samples_table(metadata: dict) -> None:
     """
-    Load the SAMPLES table from records in the VCF file.
+    Load the GENOMES table from records in the VCF file.
 
     param metadata: dict: metadata object from the VCF file
     """
 
-    #TODO: use a function to check if genome_id exists in SAMPLES table
+    #TODO: use a function to check if genome_id exists in GENOMES table
     current_samples = check_unique_constaints()
     # for testing
     current_samples = ['RF_001', 'RF_041', 'RF_090']
 
-    logger.info(f'Updating SAMPLES table for genome_id: {metadata["genome_id"]}')
-    logger.info(f'Updating SAMPLES table for metadata json: {metadata}')
+    logger.info(f'Updating GENOMES table for genome_id: {metadata["genome_id"]}')
+    logger.info(f'Updating GENOMES table for metadata json: {metadata}')
 
     return None
 
