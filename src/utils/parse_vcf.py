@@ -192,6 +192,24 @@ def load_chromosomes_table(record: vcf.model._Record, chr_index: dict, metadata:
         logger.info(f'Database commit successful')
 
     else:
+        # get start and end positions from the database 
+        qry = """
+                SELECT start, end
+                FROM chromosomes
+                WHERE chromosome_id = ? AND genome_id = ?
+                """
+        
+        db_start_end = conn.execute(qry, (chromosome_id, metadata["genome_id"])).fetchone()
+
+        # check if the db start is greater than the record start
+        # TODO: DEBUG this section
+        if db_start_end[0] > chr_index[record.CHROM]["start"]:
+            logger.info(f'Updating CHROMOSOMES table for start at {primary_key_check}: {chr_index[record.CHROM]["start"]}')
+            conn.execute('UPDATE chromosomes SET start = ? WHERE chromosome_id = ? AND genome_id = ?', (chr_index[record.CHROM]["start"], chromosome_id, metadata["genome_id"]))
+            conn.commit()
+
+
+
         logger.info(f'Skipping CHROMOSOMES table for chromosome_id | reference : {chromosome_id} {metadata["genome_id"]}')
 
     return None

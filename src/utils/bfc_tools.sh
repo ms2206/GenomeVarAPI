@@ -2,11 +2,13 @@
 
 root='/Users/mspriggs/Library/CloudStorage/OneDrive-Illumina,Inc./Documents/Applied_Bioinformatics/modules/data_integration_and_interaction_networks/ASSIGNMENT/data/raw'
 
-vcf=${root}'/RF_001_subset.vcf'
-gz=${root}/RF_001_subset.vcf.gz
+vcf=${root}'/RF_090_subset.vcf'
+gz=${root}/RF_090_subset.vcf.gz
 
 # zip file
 bgzip -c ${vcf} > ${gz}
+
+
 
 # make index
 tabix -p vcf ${gz}
