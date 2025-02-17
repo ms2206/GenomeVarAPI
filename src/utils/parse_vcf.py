@@ -192,7 +192,7 @@ def load_chromosomes_table(record: vcf.model._Record, chr_index: dict, metadata:
         logger.info(f'Database commit successful')
 
     else:
-        logger.info(f'Skipping CHROMOSOMES table for chromosome_id | genome_id : {chromosome_id} {metadata["genome_id"]}')
+        logger.info(f'Skipping CHROMOSOMES table for chromosome_id | reference : {chromosome_id} {metadata["genome_id"]}')
 
     return None
 
