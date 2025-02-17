@@ -149,15 +149,19 @@ def make_chromosome_index(record: vcf.model._Record) -> dict:
     return chr_index
 
 
-def load_chromosomes_table(record: vcf.model._Record, chr_index: dict) -> None:
+def load_chromosomes_table(record: vcf.model._Record, chr_index: dict, metadata: dict) -> None:
     """
     Load the CHROMOSOMES table from records in the VCF file. Using chr_index as index to access start and stop positions.
 
     param record: vcf.model._Record: record from VCF object.
     param chr_index: dict: dictionary with chromosome_id as key and start and end positions as values.
+    param metadata: dict: metadata object from the VCF file
     """
 
     #TODO: use a function to check if chromosome_id exists in CHROMOSOMES table
+    current_keys_list_of_tuples = check_unique_constaints('chromosomes', ['chromosome_id, genome_id'])
+    current_chromosomes = [(c[0], c[1]) for c in current_keys_list_of_tuples]
+
 
     # extract reference from CHROM field
     reference_genome = record.CHROM.split('ch')[0]
@@ -165,10 +169,30 @@ def load_chromosomes_table(record: vcf.model._Record, chr_index: dict) -> None:
     # extract chromosome_id from CHROM field
     chromosome_id = 'chr' + record.CHROM.split('ch')[1]
 
-    logger.info(f'Updating CHROMOSOMES table for reference: {reference_genome}')
-    logger.info(f'Updating CHROMOSOMES table for chromosome_id: {chromosome_id}')
-    logger.info(f'Updating CHROMOSOMES table for start: {chr_index[record.CHROM]["start"]}')
-    logger.info(f'Updating CHROMOSOMES table for end: {chr_index[record.CHROM]["end"]}')
+    primary_key_check = (chromosome_id, metadata["genome_id"])
+
+    if primary_key_check not in current_chromosomes:
+
+        logger.info(f'Updating CHROMOSOMES table for chromosome_id: {chromosome_id}')
+        logger.info(f'Updating CHROMOSOMES table for genome_id: {metadata["genome_id"]}')
+        logger.info(f'Updating CHROMOSOMES table for reference: {reference_genome}')
+        logger.info(f'Updating CHROMOSOMES table for start: {chr_index[record.CHROM]["start"]}')
+        logger.info(f'Updating CHROMOSOMES table for end: {chr_index[record.CHROM]["end"]}')
+
+        # update CHROMOSOMES table
+        qry = """
+                INSERT INTO chromosomes (chromosome_id, genome_id, reference, start, end)
+                VALUES 
+                (?, ?, ?, ?, ?)
+                """
+        
+        conn.execute(qry, (chromosome_id, metadata["genome_id"], reference_genome, chr_index[record.CHROM]["start"], chr_index[record.CHROM]["end"]))
+
+        conn.commit()
+        logger.info(f'Database commit successful')
+
+    else:
+        logger.info(f'Skipping CHROMOSOMES table for chromosome_id | genome_id : {chromosome_id} {metadata["genome_id"]}')
 
     return None
 
@@ -302,7 +326,7 @@ def main():
 
             # load_chromosomes_table
             if chr_index:
-                load_chromosomes_table(record, chr_index)
+                load_chromosomes_table(record, chr_index, vcf_file.metadata)
             else:
                 logger.info('No chromosome index found')
                 raise ValueError('No chromosome index found')
