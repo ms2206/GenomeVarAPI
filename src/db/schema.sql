@@ -1,10 +1,9 @@
 PRAGMA foreign_keys = true;
 
 /* Drop tables */
-DROP TABLE IF EXISTS varients;
+DROP TABLE IF EXISTS variants;
 DROP TABLE IF EXISTS chromosomes;
 DROP TABLE IF EXISTS genomes;
-
 
 /* Create tables */
 CREATE TABLE genomes (
@@ -24,8 +23,8 @@ CREATE TABLE chromosomes (
 );
     
 
-CREATE TABLE varients (
-    varient_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE variants (
+    variant_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     chromosome_id STRING NOT NULL,
     position INTEGER NOT NULL,
     vcf_id STRING NOT NULL,

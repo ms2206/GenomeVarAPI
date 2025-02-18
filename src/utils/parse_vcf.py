@@ -69,6 +69,8 @@ def import_vcf(vcf_filepath: str) -> vcf.Reader:
     """
 
     logger.info(f'Importing VCF file from: {vcf_filepath}')
+
+    #TODO: add try except block for file not found error
     vcf_reader = vcf.Reader(open(vcf_filepath, 'r'))
 
     # consume first row to access genome_id from record
@@ -129,8 +131,8 @@ def make_chromosome_index(chr_index: dict, record: vcf.model._Record, metadata: 
     # extract the chromosome, start, and end and genome_id positions
     
     genome_id = metadata["genome_id"]
-    chrom = record.CHROM
-    dict_key = f'{genome_id}_{chrom}'
+    chrom = 'chr' + record.CHROM.split('ch')[1] # convert ch{xx} to chr{xx}
+    dict_key = f'{genome_id}-{chrom}'
 
     start = record.POS
     end = start + len(record.REF) - 1    # calculate end as start position plus length (-1 python is inclusive).
@@ -199,31 +201,57 @@ def load_chromosomes_table(record: vcf.model._Record, metadata: dict) -> None:
         logger.info(f'Database commit successful')
 
     else:
-        # get start and end positions from the database 
-        # qry = """
-        #         SELECT start, end
-        #         FROM chromosomes
-        #         WHERE chromosome_id = ? AND genome_id = ?
-        #         """
-        
-        # db_start_end = conn.execute(qry, (chromosome_id, metadata["genome_id"])).fetchone()
-
-        # # check if the db start is greater than the record start
-        # # TODO: DEBUG this section
-        # if db_start_end[0] > chr_index[record.CHROM]["start"]:
-        #     logger.info(f'Updating CHROMOSOMES table for start at {primary_key_check}: {chr_index[record.CHROM]["start"]}')
-        #     conn.execute('UPDATE chromosomes SET start = ? WHERE chromosome_id = ? AND genome_id = ?', (chr_index[record.CHROM]["start"], chromosome_id, metadata["genome_id"]))
-        #     conn.commit()
-
-
-
         logger.info(f'Skipping CHROMOSOMES table for chromosome_id | reference : {chromosome_id} {metadata["genome_id"]}')
 
     return None
 
 
-def update_chromosomes_table(chr_index: dict) -> None:
-    pass
+def update_chromosomes_start_end_positions(chr_index: dict) -> None:
+    """
+    Update the CHROMOSOMES table with the start and end positions from the chromosome index.
+    note: chr_index is only accurate after all records have been processed.
+
+    param chr_index: dict: dictionary with chromosome_id as key and start and end positions as values.
+
+    """
+    
+    keys = list(chr_index.keys())
+    
+    # extract genome_id from the keys in the chr_index
+    intermedite_list = [intermedite_list.split('-') for intermedite_list in keys]
+    genome_id = set([i[0] for i in intermedite_list])
+
+    # extract chromosomes from the keys in the chr_index
+    chromosomes = set([i[1] for i in intermedite_list]) # ugly but works
+
+    # make a list of tuples for the current genome_id and chromosome_id
+    database_keys = [(list(genome_id)[0], c) for c in chromosomes]
+
+    # loop through the database_keys and retrieve the start and end positions
+    for key in database_keys:
+        qry = """
+                SELECT start, end
+                FROM chromosomes
+                WHERE chromosome_id = ? AND genome_id = ?
+                """   
+        
+        db_start_end = conn.execute(qry, (key[1], key[0])).fetchone()
+
+        # update db if the db start is greater than the current chr_index start
+        if db_start_end[0] > chr_index[f'{key[0]}-{key[1]}']["start"]:
+            logger.info(f'Updating CHROMOSOMES table for start at {key}: {chr_index[f"{key[0]}-{key[1]}"]["start"]}')
+            conn.execute('UPDATE chromosomes SET start = ? WHERE chromosome_id = ? AND genome_id = ?', (chr_index[f'{key[0]}-{key[1]}']["start"], key[1], key[0]))
+            conn.commit()
+            logger.info(f'Database commit successful')
+        
+        # update db if the db end is less than the current chr_index end
+        if db_start_end[1] < chr_index[f'{key[0]}-{key[1]}']["end"]:
+            logger.info(f'Updating CHROMOSOMES table for end at {key}: {chr_index[f"{key[0]}-{key[1]}"]["end"]}')
+            conn.execute('UPDATE chromosomes SET end = ? WHERE chromosome_id = ? AND genome_id = ?', (chr_index[f'{key[0]}-{key[1]}']["end"], key[1], key[0]))
+            conn.commit()
+            logger.info(f'Database commit successful')
+
+    return None
 
 
 def load_genomes_table(metadata: dict) -> None:
@@ -301,8 +329,8 @@ def load_variants_table(record: vcf.model._Record, line_number) -> None:
 
     else:
         # empty dict is falsey but retains the same type
-        snpEff_match = dict()
-    
+        snpEff_match = dict() 
+
 
     logger.info(f'Updating VARIANTS table for chromosome_id: {chromosome_id}')
     logger.info(f'Updating VARIANTS table for POS: {record.POS}')
@@ -316,15 +344,48 @@ def load_variants_table(record: vcf.model._Record, line_number) -> None:
     logger.info(f'Updating VARIANTS table for GENOTYPES: {record.samples}')
 
     if snpEff_match:
-        # logger.info(f'Updating VARIANTS table for EFF: {record.INFO["EFF"][0]}')
+       
+        logger.info(f'Updating VARIANTS table for chromosome_id: {chromosome_id}')
+        logger.info(f'Updating VARIANTS table for POS: {record.POS}')
+        logger.info(f'Updating VARIANTS table for ID: {record.ID}')
+        logger.info(f'Updating VARIANTS table for REF: {record.REF}')
+        logger.info(f'Updating VARIANTS table for ALT: {record.ALT}')
+        logger.info(f'Updating VARIANTS table for QUAL: {record.QUAL}')
+        logger.info(f'Updating VARIANTS table for FILTER: {record.FILTER}')
+        logger.info(f'Updating VARIANTS table for INFO: \'{json.dumps(record.INFO)}\'')
+        logger.info(f'Updating VARIANTS table for FORMAT: {record.FORMAT}')
+        logger.info(f'Updating VARIANTS table for GENOTYPES: {record.samples}')
         logger.info(f'Updating VARIANTS table for snpEff: {snpEff_match}')
+        logger.info(f'Updating VARIANTS table for is_SNP: {is_SNP}')
+        logger.info(f'Updating VARIANTS table for genome_id: {record.samples[0].sample}')
+
+         # update VARIANTS table
+        qry = """
+                INSERT INTO variants (chromosome_id, position, vcf_id, ref, alt, quality, filter, info, format, genotype, snpEff_match, is_SNP, genome_id)
+                VALUES
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """
+        
+        conn.execute(qry, (chromosome_id, record.POS, str(record.ID), record.REF, str(record.ALT), record.QUAL, str(record.FILTER), json.dumps(record.INFO), record.FORMAT, str(record.samples), snpEff_match, is_SNP, record.samples[0].sample))
+
+        conn.commit()
+
+        logger.warning(f'Database commit successful')
     else:
-        # logger.info(f'Skipping VARIANTS table for EFF')
+        logger.info(f'Updating VARIANTS table for chromosome_id: {chromosome_id}')
+        logger.info(f'Updating VARIANTS table for POS: {record.POS}')
+        logger.info(f'Updating VARIANTS table for ID: {record.ID}')
+        logger.info(f'Updating VARIANTS table for REF: {record.REF}')
+        logger.info(f'Updating VARIANTS table for ALT: {record.ALT}')
+        logger.info(f'Updating VARIANTS table for QUAL: {record.QUAL}')
+        logger.info(f'Updating VARIANTS table for FILTER: {record.FILTER}')
+        logger.info(f'Updating VARIANTS table for INFO: \'{json.dumps(record.INFO)}\'')
+        logger.info(f'Updating VARIANTS table for FORMAT: {record.FORMAT}')
+        logger.info(f'Updating VARIANTS table for GENOTYPES: {record.samples}')
         logger.info(f'Skipping VARIANTS table for snpEff')
-    
-    logger.info(f'Updating VARIANTS table for is_SNP: {is_SNP}')
-    logger.info(f'Updating VARIANTS table for genome_id: {record.samples[0].sample}')
-    
+        logger.info(f'Updating VARIANTS table for is_SNP: {is_SNP}')
+        logger.info(f'Updating VARIANTS table for genome_id: {record.samples[0].sample}')
+   
 
 ############
 ### MAIN ###
@@ -368,9 +429,10 @@ def main():
             logger.info('Processed record')
 
         # update start and end positions in CHROMOSOMES table
-        update_chromosomes_table(chr_index) # all records have been processed by this point
+        update_chromosomes_start_end_positions(chr_index) # all records have been processed by this point
         
         logger.info(f'Processed {line_number} records for {vcf_file.metadata["genome_id"]}.')
+        
 
     # close the database connection
     conn.close()
