@@ -116,58 +116,65 @@ def check_unique_constaints(table: str, cols: list) -> list:
     return unique_rows
 
 
-def make_chromosome_index(record: vcf.model._Record) -> dict:
+def make_chromosome_index(chr_index: dict, record: vcf.model._Record, metadata: dict) -> dict:
     """
     Make an index of the start and end positions for each chromosome in the VCF file.
 
+    param chr_index: dict: dictionary with geneome_id + chromosome as key and start and end positions as values.
     param record: vcf.model._Record: record from VCF object.
+    param metadata: dict: metadata object from the VCF file
     return: dict: dictionary with chromosome_id as key and start and end positions as values.
     """
-
-    # create index for each choromosomes
-    chr_index = dict()
     
-    # extract the chromosome, start, and end positions
+    # extract the chromosome, start, and end and genome_id positions
+    
+    genome_id = metadata["genome_id"]
     chrom = record.CHROM
+    dict_key = f'{genome_id}_{chrom}'
+
     start = record.POS
+    end = start + len(record.REF) - 1    # calculate end as start position plus length (-1 python is inclusive).
+    
+    # check if dict_key exists in chr_index
+    if dict_key not in chr_index:
 
-    # calculate end as start position plus length (-1 python is inclusive).
-    end = start + len(record.REF) - 1
-
-    if chrom not in chr_index:
-        chr_index[chrom] = {'start': start, 'end': end}
+    #if chrom not in chr_index:
+        chr_index[dict_key] = {'start': start, 'end': end}
 
     else:
         # update start if the record start is less than the index start 
-        if start < chr_index[chrom]['start']:
-            chr_index[chrom]['start'] = start
+        if start < chr_index[dict_key]['start']:
+            chr_index[dict_key]['start'] = start
 
         # update end if the record end is greater than the index end
-        if end >= chr_index[chrom]['end']:
-            chr_index[chrom]['end'] = end
+        if end >= chr_index[dict_key]['end']:
+            chr_index[dict_key]['end'] = end
 
     return chr_index
 
 
-def load_chromosomes_table(record: vcf.model._Record, chr_index: dict, metadata: dict) -> None:
+def load_chromosomes_table(record: vcf.model._Record, metadata: dict) -> None:
     """
-    Load the CHROMOSOMES table from records in the VCF file. Using chr_index as index to access start and stop positions.
+    Load the CHROMOSOMES table from records in the VCF file. 
+    note: start and end positions are committed in this function but may be updated later in the process.
 
     param record: vcf.model._Record: record from VCF object.
-    param chr_index: dict: dictionary with chromosome_id as key and start and end positions as values.
     param metadata: dict: metadata object from the VCF file
     """
 
-    #TODO: use a function to check if chromosome_id exists in CHROMOSOMES table
+    # check if chromosome_id exists in CHROMOSOMES table
     current_keys_list_of_tuples = check_unique_constaints('chromosomes', ['chromosome_id, genome_id'])
     current_chromosomes = [(c[0], c[1]) for c in current_keys_list_of_tuples]
-
 
     # extract reference from CHROM field
     reference_genome = record.CHROM.split('ch')[0]
 
     # extract chromosome_id from CHROM field
     chromosome_id = 'chr' + record.CHROM.split('ch')[1]
+
+    # extract the start and end positions
+    start = record.POS
+    end = start + len(record.REF) - 1    # calculate end as start position plus length (-1 python is inclusive).
 
     primary_key_check = (chromosome_id, metadata["genome_id"])
 
@@ -176,8 +183,8 @@ def load_chromosomes_table(record: vcf.model._Record, chr_index: dict, metadata:
         logger.info(f'Updating CHROMOSOMES table for chromosome_id: {chromosome_id}')
         logger.info(f'Updating CHROMOSOMES table for genome_id: {metadata["genome_id"]}')
         logger.info(f'Updating CHROMOSOMES table for reference: {reference_genome}')
-        logger.info(f'Updating CHROMOSOMES table for start: {chr_index[record.CHROM]["start"]}')
-        logger.info(f'Updating CHROMOSOMES table for end: {chr_index[record.CHROM]["end"]}')
+        logger.info(f'Updating CHROMOSOMES table for start: {start}')
+        logger.info(f'Updating CHROMOSOMES table for end: {end}')
 
         # update CHROMOSOMES table
         qry = """
@@ -186,33 +193,37 @@ def load_chromosomes_table(record: vcf.model._Record, chr_index: dict, metadata:
                 (?, ?, ?, ?, ?)
                 """
         
-        conn.execute(qry, (chromosome_id, metadata["genome_id"], reference_genome, chr_index[record.CHROM]["start"], chr_index[record.CHROM]["end"]))
+        conn.execute(qry, (chromosome_id, metadata["genome_id"], reference_genome, start, end))
 
         conn.commit()
         logger.info(f'Database commit successful')
 
     else:
         # get start and end positions from the database 
-        qry = """
-                SELECT start, end
-                FROM chromosomes
-                WHERE chromosome_id = ? AND genome_id = ?
-                """
+        # qry = """
+        #         SELECT start, end
+        #         FROM chromosomes
+        #         WHERE chromosome_id = ? AND genome_id = ?
+        #         """
         
-        db_start_end = conn.execute(qry, (chromosome_id, metadata["genome_id"])).fetchone()
+        # db_start_end = conn.execute(qry, (chromosome_id, metadata["genome_id"])).fetchone()
 
-        # check if the db start is greater than the record start
-        # TODO: DEBUG this section
-        if db_start_end[0] > chr_index[record.CHROM]["start"]:
-            logger.info(f'Updating CHROMOSOMES table for start at {primary_key_check}: {chr_index[record.CHROM]["start"]}')
-            conn.execute('UPDATE chromosomes SET start = ? WHERE chromosome_id = ? AND genome_id = ?', (chr_index[record.CHROM]["start"], chromosome_id, metadata["genome_id"]))
-            conn.commit()
+        # # check if the db start is greater than the record start
+        # # TODO: DEBUG this section
+        # if db_start_end[0] > chr_index[record.CHROM]["start"]:
+        #     logger.info(f'Updating CHROMOSOMES table for start at {primary_key_check}: {chr_index[record.CHROM]["start"]}')
+        #     conn.execute('UPDATE chromosomes SET start = ? WHERE chromosome_id = ? AND genome_id = ?', (chr_index[record.CHROM]["start"], chromosome_id, metadata["genome_id"]))
+        #     conn.commit()
 
 
 
         logger.info(f'Skipping CHROMOSOMES table for chromosome_id | reference : {chromosome_id} {metadata["genome_id"]}')
 
     return None
+
+
+def update_chromosomes_table(chr_index: dict) -> None:
+    pass
 
 
 def load_genomes_table(metadata: dict) -> None:
@@ -328,7 +339,10 @@ def main():
     for vcf_filepath in get_vcf_files():
 
         # import specific VCF file
-        vcf_file = import_vcf(vcf_filepath)    
+        vcf_file = import_vcf(vcf_filepath)  
+
+        # make a chromosome index
+        chr_index = dict()  
 
         # initialize a line number counter
         line_number = 0
@@ -340,15 +354,11 @@ def main():
             logger.info(f'Processing record at line number: {line_number}')
 
             # create chromosome index specific to the vcf file
-            chr_index = make_chromosome_index(record)
+            chr_index = make_chromosome_index(chr_index, record, vcf_file.metadata)
 
             # load_chromosomes_table
-            if chr_index:
-                load_chromosomes_table(record, chr_index, vcf_file.metadata)
-            else:
-                logger.info('No chromosome index found')
-                raise ValueError('No chromosome index found')
-
+            load_chromosomes_table(record, vcf_file.metadata)
+            
             # load_samples_table
             load_genomes_table(vcf_file.metadata)
 
@@ -357,6 +367,9 @@ def main():
 
             logger.info('Processed record')
 
+        # update start and end positions in CHROMOSOMES table
+        update_chromosomes_table(chr_index) # all records have been processed by this point
+        
         logger.info(f'Processed {line_number} records for {vcf_file.metadata["genome_id"]}.')
 
     # close the database connection
