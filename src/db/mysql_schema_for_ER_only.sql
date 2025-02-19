@@ -35,6 +35,7 @@ CREATE TABLE varients (
     snpeff_match TEXT,
     is_snp BOOLEAN NOT NULL,
     genome_id VARCHAR(255) NOT NULL,
+    gene_name TEXT,
     FOREIGN KEY (chromosome_id) REFERENCES chromosomes(chromosome_id),
     FOREIGN KEY (genome_id) REFERENCES genomes(genome_id)
 );

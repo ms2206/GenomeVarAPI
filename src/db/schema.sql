@@ -38,6 +38,7 @@ CREATE TABLE variants (
     snpeff_match TEXT,
     is_snp BOOLEAN NOT NULL,
     genome_id STRING NOT NULL,
+    gene_name STRING,
     FOREIGN KEY (chromosome_id) REFERENCES chromosomes(chromosome_id),
     FOREIGN KEY (genome_id) REFERENCES genomes(genome_id)
 );
