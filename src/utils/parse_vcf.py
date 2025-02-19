@@ -11,6 +11,7 @@ logger = logging.getLogger()
 
 # set up database connection
 conn = sqlite3.connect('./src/db/vcf_db.sqlite3')
+#TODO: think about relative path for db connection
 
 # set up cursor
 cursor = conn.cursor()
@@ -303,16 +304,16 @@ def load_variants_table(record: vcf.model._Record, line_number) -> None:
     chromosome_id = 'chr' + record.CHROM.split('ch')[1]
 
     # set is_SNP bool
-    if len(record.ALT) != 1:
+    if len(record.ALT[0]) != 1:
         is_SNP = 0
     else:
         is_SNP = 1
 
     # extract SnpEff annotation
-    regex = re.compile(r'HIGH|MODERATE|LOW')
+    SnpEff_regex = re.compile(r'HIGH|MODERATE|LOW')
     
     try:
-        eff_match = regex.search(record.INFO["EFF"][0])
+        eff_match = SnpEff_regex.search(record.INFO["EFF"][0])
 
     except KeyError as e:
 
@@ -322,27 +323,38 @@ def load_variants_table(record: vcf.model._Record, line_number) -> None:
             f'on line {line_number} of the VCF file (excluding header and metadata).'
             f'KeyError: {e}'
         )
-        
-
+      
     if eff_match:
-        snpEff_match = regex.search(record.INFO["EFF"][0]).group()
+        snpEff_match = SnpEff_regex.search(record.INFO["EFF"][0]).group()
 
     else:
         # empty dict is falsey but retains the same type
         snpEff_match = dict() 
 
+   
+    # extract gene annotation
+    gene_name_regex = re.compile(r'mRNA:([^|]+)') # bit hardcoding here; what if NOT mRNA gene... # ugly object type
 
-    logger.info(f'Updating VARIANTS table for chromosome_id: {chromosome_id}')
-    logger.info(f'Updating VARIANTS table for POS: {record.POS}')
-    logger.info(f'Updating VARIANTS table for ID: {record.ID}')
-    logger.info(f'Updating VARIANTS table for REF: {record.REF}')
-    logger.info(f'Updating VARIANTS table for ALT: {record.ALT}')
-    logger.info(f'Updating VARIANTS table for QUAL: {record.QUAL}')
-    logger.info(f'Updating VARIANTS table for FILTER: {record.FILTER}')
-    logger.info(f'Updating VARIANTS table for INFO: \'{json.dumps(record.INFO)}\'')
-    logger.info(f'Updating VARIANTS table for FORMAT: {record.FORMAT}')
-    logger.info(f'Updating VARIANTS table for GENOTYPES: {record.samples}')
+    try:
+        gene_name_match = gene_name_regex.search(record.INFO["EFF"][0])
+    
+    except KeyError as e:
 
+        gene_name_match = None
+        logger.warning(
+            f'No gene annotation found for {record.INFO} '
+            f'on line {line_number} of the VCF file (excluding header and metadata).'
+            f'KeyError: {e}'
+        )
+
+    if gene_name_match:
+        gene_name = gene_name_regex.search(record.INFO["EFF"][0]).group(1)
+
+    else:
+        gene_name = None    # might not be necessary could use snpEff_match is falsey
+
+    # update VARIANTS table
+    # query depends on whether snpEff_match is empty or not
     if snpEff_match:
        
         logger.info(f'Updating VARIANTS table for chromosome_id: {chromosome_id}')
@@ -358,19 +370,20 @@ def load_variants_table(record: vcf.model._Record, line_number) -> None:
         logger.info(f'Updating VARIANTS table for snpEff: {snpEff_match}')
         logger.info(f'Updating VARIANTS table for is_SNP: {is_SNP}')
         logger.info(f'Updating VARIANTS table for genome_id: {record.samples[0].sample}')
+        logger.info(f'Updating VARIANTS table for gene_name: {gene_name}')
 
          # update VARIANTS table
         qry = """
-                INSERT INTO variants (chromosome_id, position, vcf_id, ref, alt, quality, filter, info, format, genotype, snpEff_match, is_SNP, genome_id)
+                INSERT INTO variants (chromosome_id, position, vcf_id, ref, alt, quality, filter, info, format, genotype, snpEff_match, is_SNP, genome_id, gene_name)
                 VALUES
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """
         
-        conn.execute(qry, (chromosome_id, record.POS, str(record.ID), record.REF, str(record.ALT), record.QUAL, str(record.FILTER), json.dumps(record.INFO), record.FORMAT, str(record.samples), snpEff_match, is_SNP, record.samples[0].sample))
+        conn.execute(qry, (chromosome_id, record.POS, str(record.ID), record.REF, str(record.ALT), record.QUAL, str(record.FILTER), json.dumps(record.INFO), record.FORMAT, str(record.samples), snpEff_match, is_SNP, record.samples[0].sample, gene_name))
 
         conn.commit()
 
-        logger.warning(f'Database commit successful')
+        logger.info(f'Database commit successful')
     else:
         logger.info(f'Updating VARIANTS table for chromosome_id: {chromosome_id}')
         logger.info(f'Updating VARIANTS table for POS: {record.POS}')
@@ -385,6 +398,20 @@ def load_variants_table(record: vcf.model._Record, line_number) -> None:
         logger.info(f'Skipping VARIANTS table for snpEff')
         logger.info(f'Updating VARIANTS table for is_SNP: {is_SNP}')
         logger.info(f'Updating VARIANTS table for genome_id: {record.samples[0].sample}')
+        logger.info(f'Skipping VARIANTS table for gene_name')
+
+        # update VARIANTS table
+        qry = """
+                INSERT INTO variants (chromosome_id, position, vcf_id, ref, alt, quality, filter, info, format, genotype, is_SNP, genome_id)
+                VALUES
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """
+        
+        conn.execute(qry, (chromosome_id, record.POS, str(record.ID), record.REF, str(record.ALT), record.QUAL, str(record.FILTER), json.dumps(record.INFO), record.FORMAT, str(record.samples), is_SNP, record.samples[0].sample))
+
+        conn.commit()
+
+        logger.info(f'Database commit successful')
    
 
 ############
