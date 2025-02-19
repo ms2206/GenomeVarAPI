@@ -19,5 +19,9 @@
   "bugs": {
     "url": "https://github.com/ms2206/GenomeVarAPI/issues"
   },
-  "homepage": "https://github.com/ms2206/GenomeVarAPI#readme"
+  "homepage": "https://github.com/ms2206/GenomeVarAPI#readme",
+  "dependencies": {
+    "express": "^4.21.2",
+    "sqlite3": "^5.1.7"
+  }
 }
