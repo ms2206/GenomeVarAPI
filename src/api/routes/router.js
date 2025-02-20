@@ -123,4 +123,13 @@ router.get('/genomes/:genome_id/indels', function(req, res) {
         }
     });
 });
+
+
+// List genes impacted by moderate or high impact variants in a specific 
+// chromosome region for a specific VCF {genome_id}
+
+router.get('/genomes/:genome_id/:chromosome_id/:mbp', function(req, res) {});
+
+
+
 module.exports = router;
