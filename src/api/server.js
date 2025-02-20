@@ -9,6 +9,9 @@ app.listen(port, function() {
 
 // Construct the router file path relative to src/api/
 const routerPath = path.join(__dirname, 'routes', 'router.js');
+
+// console.log(routerPath);
+
 const router = require(routerPath);
 
 app.use('/api', router);

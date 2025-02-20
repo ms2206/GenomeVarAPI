@@ -3,9 +3,9 @@ Space to play around with SQL queries
 */
 
 -- List all VCF in database
--- SELECT 
---     DISTINCT genome_id
--- FROM genomes;
+SELECT 
+    DISTINCT genome_id
+FROM genomes;
 
 /*
 RF_001
@@ -15,15 +15,15 @@ RF_090
 
 -- List number of varients in each VCF {genome_id}
 -- GROUP BY chromosome_id
--- SELECT 
+SELECT 
      
---     genome_id,
---     chromosome_id,
---     COUNT(*) AS num_variants
+    genome_id,
+    chromosome_id,
+    COUNT(*) AS num_variants
 
--- FROM variants
+FROM variants
 
--- GROUP BY genome_id, chromosome_id;
+GROUP BY genome_id, chromosome_id;
 
 /*
 RF_001|chr01|75
