@@ -7,8 +7,14 @@ yarn-error.log*
 lerna-debug.log*
 .pnpm-debug.log*
 
-# Ignore VCF file
+# Ignore all .vcf files
 *.vcf
+
+# Ignore all .vcf.gz files
+*.vcf.gz
+
+# Ignore all .vcf.gz.tbi files
+*.vcf.gz.tbi
 
 # Ignore vcf_db.sqlite3
 src/db/vcf_db.sqlite3
