@@ -1,0 +1,27 @@
+{
+  "name": "genome_var_api",
+  "version": "1.0.0",
+  "description": "A REST API service for storing, querying, and visualizing eukaryotic genome variants from annotated VCF files, featuring a relational database and parsing tool for streamlined genomic data management.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ms2206/GenomeVarAPI.git"
+  },
+  "author": "Matthew Spriggs <matspriggs@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ms2206/GenomeVarAPI/issues"
+  },
+  "homepage": "https://github.com/ms2206/GenomeVarAPI#readme",
+  "dependencies": {
+    "express": "^4.21.2",
+    "sqlite3": "^5.1.7"
+  }
+}
