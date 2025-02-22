@@ -423,48 +423,35 @@ Interacting with endpoints
 The API has 6 main endpoints:
 <div>
 <ul>
-<li>api/genomes<br> List all VCF in database.<br>
-<code>http://localhost:3000/api/genomes</code></li>
+<li>api/genomes<br></li>
+<li>api/genomes/:genome_id/variants<br></li>
+<li>api/genomes/:genome_id/snps<br></li>
+<li>api/genomes/:genome_id/indels<br></li>
+<li>api/genomes/:genome_id/:chromosome_id/:mbp?<br></li>
+<li>api/variants/gene/:gene_name<br></li>
 </ul>
 </div>
 <div>
-<ul>
-<li>api/genomes/:genome_id/variants<br> List number of variants in each
-VCF {genome_id} by chromosome.<br>
-<code>http://localhost:3000/api/genomes/RF_001/variants</code></li>
-</ul>
+<ol style="list-style-type: decimal">
+<li><p>List all VCF in database.<br>
+<code>http://localhost:3000/api/genomes</code></p></li>
+<li><p>List number of variants in each VCF {genome_id} by
+chromosome.<br>
+<code>http://localhost:3000/api/genomes/RF_001/variants</code></p></li>
+<li><p>List number of SNPs in each VCF {genome_id} by chromosome.<br>
+<code>http://localhost:3000/api/genomes/RF_001/snps</code></p></li>
+<li><p>List number of INDELs in each VCF {genome_id} by chromosome.<br>
+<code>http://localhost:3000/api/genomes/RF_001/indels</code></p></li>
+<li><p>List genes impacted by moderate or high impact variants in a
+specific chromosome region for a specific VCF {genome_id}. <br> <em>:mbp
+is an optional parameter to be the number of mbp from the start of the
+chromosome. If NULL then the whole chromosome will be shown.</em><br>
+<code>http://localhost:3000/api/genomes/RF_001/chr03/20</code></p></li>
+<li><p>List sample which contains a variant that impacts a specific
+gene.<br>
+<code>http://localhost:3000/api/variants/gene/Solyc03g006480.1.1</code></p></li>
+</ol>
 </div>
-<div>
-<ul>
-<li>api/genomes/:genome_id/snps<br> List number of SNPs in each VCF
-{genome_id} by chromosome.<br>
-<code>http://localhost:3000/api/genomes/RF_001/snps</code></li>
-</ul>
-</div>
-<div>
-<ul>
-<li>api/genomes/:genome_id/indels<br> List number of INDELs in each VCF
-{genome_id} by chromosome.<br>
-<code>http://localhost:3000/api/genomes/RF_001/indels</code></li>
-</ul>
-</div>
-<div>
-<ul>
-<li>api/genomes/:genome_id/:chromosome_id/:mbp?<br> List genes impacted
-by moderate or high impact variants in a specific chromosome region for
-a specific VCF {genome_id}. <br> :mbp is an optional parameter to be the
-number of mbp from the start of the chromosome. If NULL then the whole
-chromosome will be shown.<br>
-<code>http://localhost:3000/api/genomes/RF_001/chr03/20</code></li>
-</ul>
-</div>
-<div>
-<ul>
-<li>api/variants/gene/:gene_name<br> List sample which contains a
-variant that impacts a specific gene.<br>
-<code>http://localhost:3000/api/variants/gene/Solyc03g006480.1.1</code>
-</br></li>
-</ul>
 <pre><code>npm install</code></pre>
 </div>
 <h3>
