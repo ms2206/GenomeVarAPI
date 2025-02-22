@@ -236,7 +236,7 @@ db.all(query, [req.params.genome_id, req.params.chromosome_id, bp],
         });
     });
     
-
+db.close();
  
 
 module.exports = router;
