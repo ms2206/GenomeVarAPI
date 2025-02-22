@@ -372,15 +372,23 @@ Getting Started
 <pre><code>git clone https://github.com/ms2206/GenomeVarAPI.git</code></pre>
 <p>TODO: Add docker image.</p>
 <h5>
+<blockquote>
+<blockquote>
 Initialize the database
 </h5>
+</blockquote>
+</blockquote>
 <p>A schema <code>src/db/schema.sql</code> script is provided which
 contains table declarations for the database. This must be run first. To
 run this file execute the below code:<br></p>
 <pre><code>sqlite3 src/db/vcf_db.sqlite3 &lt; src/db/schema.sql</code></pre>
 <h5>
+<blockquote>
+<blockquote>
 Populate the database
 </h5>
+</blockquote>
+</blockquote>
 <p>One of the core features of this tool as a VCF parser written in
 python <code>src/utils/parse_vcf.py</code>.</p>
 <p>The python tool requires a virtual environment setup. It is recommend
@@ -409,6 +417,39 @@ provide the user with tool to inspect the inner workings of the python
 code.</p>
 <p>For example: To identify warning messages;<br></p>
 <pre><code>grep &quot;WARNING&quot; src/utils/parse_vcf.log</code></pre>
+<h5>
+<blockquote>
+<blockquote>
+Interacting with endpoints
+</h5>
+</blockquote>
+</blockquote>
+<p>The API has 6 main endpoints:</p>
+<ul>
+<li>api/genomes</li>
+</ul>
+<pre><code>http://localhost:3000/api/genomes</code></pre>
+<ul>
+<li>api/genomes/:genome_id/variants</li>
+</ul>
+<pre><code>http://localhost:3000/api/genomes/RF_001/variants</code></pre>
+<ul>
+<li>api/genomes/:genome_id/snps</li>
+</ul>
+<pre><code>http://localhost:3000/api/genomes/RF_001/snps</code></pre>
+<ul>
+<li>api/genomes/:genome_id/indels</li>
+</ul>
+<pre><code>http://localhost:3000/api/genomes/RF_001/indels</code></pre>
+<ul>
+<li>api/genomes/:genome_id/:chromosome_id/:mbp?</li>
+</ul>
+<pre><code>http://localhost:3000/api/genomes/RF_001/chr03/20</code></pre>
+<ul>
+<li>api/variants/gene/:gene_name</li>
+</ul>
+<pre><code>http://localhost:3000/api/variants/gene/Solyc03g006480.1.1</code></pre>
+<pre><code>npm install</code></pre>
 </div>
 <h3>
 Features and Functionality
@@ -416,6 +457,7 @@ Features and Functionality
 <h3>
 Support and Feedback
 </h3>
+</div>
 
 
 

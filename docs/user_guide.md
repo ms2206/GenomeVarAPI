@@ -1,6 +1,6 @@
-<h1> GenomeVarAPI USER GUIDE </h1>
+<h1>GenomeVarAPI USER GUIDE </h1>
 
-<h3> Overview</h3>
+<h3>Overview</h3>
 <div>
 
 GenomeVarAPI is a lunix-based tool for parsing and interacting with VCF (Variant Call Format) files.
@@ -8,16 +8,16 @@ The tool has 3 elements: a python parsing module, an sqlite database, and a REST
 
 </div>
 
-<h3> Getting Started</h3>
+<h3>Getting Started</h3>
 <div>
 To download the tool: <br>
 ```
 git clone https://github.com/ms2206/GenomeVarAPI.git
 ```
 
-TODO: Add docker image.
+TODO: Add docker image. use ./src/entrypoint.sh as a wrapper.
 
-<h5>Initialize the database</h5>
+<h5>>>Initialize the database</h5>
 
 A schema `src/db/schema.sql` script is provided which contains table declarations for the database. This must be run first.
 To run this file execute the below code:<br>
@@ -25,7 +25,7 @@ To run this file execute the below code:<br>
 sqlite3 src/db/vcf_db.sqlite3 < src/db/schema.sql
 ```
 
-<h5>Populate the database</h5>
+<h5>>>Populate the database</h5>
 
 One of the core features of this tool as a VCF parser written in python `src/utils/parse_vcf.py`.
 
@@ -62,9 +62,40 @@ To identify warning messages;<br>
 grep "WARNING" src/utils/parse_vcf.log
 ```
 
+<h5>Interacting with endpoints</h5>
 
+The API has 6 main endpoints:
+<div>
+* api/genomes
+List all VCF in database.
+```
+http://localhost:3000/api/genomes
+```
+</div>
+* api/genomes/:genome_id/variants
+```
+http://localhost:3000/api/genomes/RF_001/variants
+```
+* api/genomes/:genome_id/snps
+```
+http://localhost:3000/api/genomes/RF_001/snps
+```
+* api/genomes/:genome_id/indels
+```
+http://localhost:3000/api/genomes/RF_001/indels
+```
+* api/genomes/:genome_id/:chromosome_id/:mbp?
+```
+http://localhost:3000/api/genomes/RF_001/chr03/20
+```
+* api/variants/gene/:gene_name
+```
+http://localhost:3000/api/variants/gene/Solyc03g006480.1.1
+```
 
-
+```
+npm install
+```
 
 </div>
 

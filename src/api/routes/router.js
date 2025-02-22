@@ -145,9 +145,9 @@ chromosome region for a specific VCF {genome_id}
 #TODO: add feature to filter by snpeff_match
 */
 
-router.get('/genomes/:genome_id/:chromosome_id/:mbp', function(req, res) {
+router.get('/genomes/:genome_id/:chromosome_id/:mbp?', function(req, res) {
 
-const mbp_string = req.params.mbp;
+const mbp_string = req.params.mbp || '1000000';
 const mbp = parseInt(mbp_string);
 
 // check if mbp is a number
@@ -236,7 +236,6 @@ db.all(query, [req.params.genome_id, req.params.chromosome_id, bp],
         });
     });
     
-db.close();
  
 
 module.exports = router;
