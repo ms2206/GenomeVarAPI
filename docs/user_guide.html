@@ -370,7 +370,7 @@ Getting Started
 <div>
 <p>To download the tool: <br></p>
 <pre><code>git clone https://github.com/ms2206/GenomeVarAPI.git</code></pre>
-<p>TODO: Add docker image.</p>
+<p>TODO: Add docker image. use ./src/entrypoint.sh as a wrapper.</p>
 <h5>
 <blockquote>
 <blockquote>
@@ -418,37 +418,53 @@ code.</p>
 <p>For example: To identify warning messages;<br></p>
 <pre><code>grep &quot;WARNING&quot; src/utils/parse_vcf.log</code></pre>
 <h5>
-<blockquote>
-<blockquote>
 Interacting with endpoints
 </h5>
-</blockquote>
-</blockquote>
-<p>The API has 6 main endpoints:</p>
+The API has 6 main endpoints:
+<div>
 <ul>
-<li>api/genomes</li>
+<li>api/genomes<br> List all VCF in database.<br>
+<code>http://localhost:3000/api/genomes</code></li>
 </ul>
-<pre><code>http://localhost:3000/api/genomes</code></pre>
+</div>
+<div>
 <ul>
-<li>api/genomes/:genome_id/variants</li>
+<li>api/genomes/:genome_id/variants<br> List number of variants in each
+VCF {genome_id} by chromosome.<br>
+<code>http://localhost:3000/api/genomes/RF_001/variants</code></li>
 </ul>
-<pre><code>http://localhost:3000/api/genomes/RF_001/variants</code></pre>
+</div>
+<div>
 <ul>
-<li>api/genomes/:genome_id/snps</li>
+<li>api/genomes/:genome_id/snps<br> List number of SNPs in each VCF
+{genome_id} by chromosome.<br>
+<code>http://localhost:3000/api/genomes/RF_001/snps</code></li>
 </ul>
-<pre><code>http://localhost:3000/api/genomes/RF_001/snps</code></pre>
+</div>
+<div>
 <ul>
-<li>api/genomes/:genome_id/indels</li>
+<li>api/genomes/:genome_id/indels<br> List number of INDELs in each VCF
+{genome_id} by chromosome.<br>
+<code>http://localhost:3000/api/genomes/RF_001/indels</code></li>
 </ul>
-<pre><code>http://localhost:3000/api/genomes/RF_001/indels</code></pre>
+</div>
+<div>
 <ul>
-<li>api/genomes/:genome_id/:chromosome_id/:mbp?</li>
+<li>api/genomes/:genome_id/:chromosome_id/:mbp?<br> List genes impacted
+by moderate or high impact variants in a specific chromosome region for
+a specific VCF {genome_id}. <br> :mbp is an optional parameter to be the
+number of mbp from the start of the chromosome. If NULL then the whole
+chromosome will be shown.<br>
+<code>http://localhost:3000/api/genomes/RF_001/chr03/20</code></li>
 </ul>
-<pre><code>http://localhost:3000/api/genomes/RF_001/chr03/20</code></pre>
+</div>
+<div>
 <ul>
-<li>api/variants/gene/:gene_name</li>
+<li>api/variants/gene/:gene_name<br> List sample which contains a
+variant that impacts a specific gene.<br>
+<code>http://localhost:3000/api/variants/gene/Solyc03g006480.1.1</code>
+</br></li>
 </ul>
-<pre><code>http://localhost:3000/api/variants/gene/Solyc03g006480.1.1</code></pre>
 <pre><code>npm install</code></pre>
 </div>
 <h3>

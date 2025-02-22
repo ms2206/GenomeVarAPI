@@ -100,13 +100,13 @@ AND variants.position < start + (20 * 1000000) -- 20 is user variable
 
 LIMIT 5;
 
--- /*
--- gene_name|genome_id|chromosome_id|snpeff_match
--- Solyc03g006480.1.1|RF_041|chr03|HIGH
--- Solyc03g033330.2.1|RF_041|chr03|HIGH
--- */
+/*
+gene_name|genome_id|chromosome_id|snpeff_match
+Solyc03g006480.1.1|RF_041|chr03|HIGH
+Solyc03g033330.2.1|RF_041|chr03|HIGH
+*/
 
--- -- List sample which contains a variant that impacts a specific gene
+-- List sample which contains a variant that impacts a specific gene
 SELECT 
     DISTINCT
     genomes.genome_id

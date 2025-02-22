@@ -66,32 +66,36 @@ grep "WARNING" src/utils/parse_vcf.log
 
 The API has 6 main endpoints:
 <div>
-* api/genomes
-List all VCF in database.
-```
-http://localhost:3000/api/genomes
-```
+* api/genomes<br>
+List all VCF in database.<br>
+`http://localhost:3000/api/genomes`
 </div>
-* api/genomes/:genome_id/variants
-```
-http://localhost:3000/api/genomes/RF_001/variants
-```
-* api/genomes/:genome_id/snps
-```
-http://localhost:3000/api/genomes/RF_001/snps
-```
-* api/genomes/:genome_id/indels
-```
-http://localhost:3000/api/genomes/RF_001/indels
-```
-* api/genomes/:genome_id/:chromosome_id/:mbp?
-```
-http://localhost:3000/api/genomes/RF_001/chr03/20
-```
-* api/variants/gene/:gene_name
-```
-http://localhost:3000/api/variants/gene/Solyc03g006480.1.1
-```
+<div>
+* api/genomes/:genome_id/variants<br>
+List number of variants in each VCF {genome_id} by chromosome.<br>
+`http://localhost:3000/api/genomes/RF_001/variants`
+</div>
+<div>
+* api/genomes/:genome_id/snps<br>
+List number of SNPs in each VCF {genome_id} by chromosome.<br>
+`http://localhost:3000/api/genomes/RF_001/snps`
+</div>
+<div>
+* api/genomes/:genome_id/indels<br>
+List number of INDELs in each VCF {genome_id} by chromosome.<br>
+`http://localhost:3000/api/genomes/RF_001/indels`
+</div>
+<div>
+* api/genomes/:genome_id/:chromosome_id/:mbp?<br>
+List genes impacted by moderate or high impact variants in a specific chromosome region for a specific VCF {genome_id}. <br>
+:mbp is an optional parameter to be the number of mbp from the start of the chromosome. If NULL then the whole chromosome will be shown.<br>
+`http://localhost:3000/api/genomes/RF_001/chr03/20`
+</div>
+<div>
+* api/variants/gene/:gene_name<br>
+List sample which contains a variant that impacts a specific gene.<br>
+`http://localhost:3000/api/variants/gene/Solyc03g006480.1.1`
+</br>
 
 ```
 npm install
