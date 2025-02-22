@@ -368,31 +368,47 @@ interface.</p>
 Getting Started
 </h3>
 <div>
-<p>To download the tool: <br>
-<code>git clone https://github.com/ms2206/GenomeVarAPI.git</code></p>
+<p>To download the tool: <br></p>
+<pre><code>git clone https://github.com/ms2206/GenomeVarAPI.git</code></pre>
 <p>TODO: Add docker image.</p>
 <h5>
 Initialize the database
 </h5>
-<p>A schema (src/db/schema.sql) script is provided which contains table
-declarations for the database. This must be run first. To run this file
-execute the below code:<br>
-<code>sqlite3 src/db/vcf_db.sqlite3 &lt; src/db/schema.sql</code>.</p>
+<p>A schema <code>src/db/schema.sql</code> script is provided which
+contains table declarations for the database. This must be run first. To
+run this file execute the below code:<br></p>
+<pre><code>sqlite3 src/db/vcf_db.sqlite3 &lt; src/db/schema.sql</code></pre>
 <h5>
 Populate the database
 </h5>
+<p>One of the core features of this tool as a VCF parser written in
+python <code>src/utils/parse_vcf.py</code>.</p>
 <p>The python tool requires a virtual environment setup. It is recommend
 to use
 <a href="https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html">conda</a>
 for this installation. The tool requires python version 3.9.*.</p>
-<p><code>conda env create -f ./src/utils/environment.yml</code></p>
-<p>Alternative installation:</p>
+<pre><code>conda env create -f src/utils/environment.yml</code></pre>
+<h6>
+Alternative installation:
+</h6>
 <pre><code>conda create --name genomeVarAPI_pyenv_3.9 python=3.9
 conda activate genomeVarAPI_pyenv_3.9
+conda install regex
 pip install &quot;setuptools&lt;58&quot; --upgrade
-pip install pyvcf
-pip install regex</code></pre>
-<p>The python tool (src/utils/parse_vcf.py)</p>
+pip install pyvcf</code></pre>
+<p>The python tool <code>src/utils/parse_vcf.py</code> can be run using
+the below command: <br></p>
+<pre><code>python src/utils/parse_vcf.py</code></pre>
+<p>This tool will parse each VCF files in <code>src/data/raw</code> and
+load them to the database <code>src/db/vcf_db.sqlite3</code>.</p>
+<p><strong>Note: This step is quite CPU intensive and can take upto 10
+minuets.</strong></p>
+<p>The tool output logs can be found at
+<code>src/utils/parse_vcf.log</code>. The logs are quite verbos but
+provide the user with tool to inspect the inner workings of the python
+code.</p>
+<p>For example: To identify warning messages;<br></p>
+<pre><code>grep &quot;WARNING&quot; src/utils/parse_vcf.log</code></pre>
 </div>
 <h3>
 Features and Functionality
