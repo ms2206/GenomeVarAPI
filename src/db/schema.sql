@@ -4,7 +4,7 @@ PRAGMA foreign_keys = true;
 DROP TABLE IF EXISTS variants;
 DROP TABLE IF EXISTS chromosomes;
 DROP TABLE IF EXISTS genomes;
-DROP TABLE IF EXISTS varients;
+
 
 /* Create tables */
 CREATE TABLE genomes (

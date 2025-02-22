@@ -1,0 +1,24 @@
+dbms,TABLE_SCHEMA,TABLE_NAME,COLUMN_NAME,ORDINAL_POSITION,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,CONSTRAINT_TYPE,REFERENCED_TABLE_SCHEMA,REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME
+mysql,GenomeVarAPI,chromosomes,chromosome_id,1,varchar,255,"PRIMARY KEY",NULL,NULL,NULL
+mysql,GenomeVarAPI,chromosomes,genome_id,2,varchar,255,"PRIMARY KEY",NULL,NULL,NULL
+mysql,GenomeVarAPI,chromosomes,genome_id,2,varchar,255,"FOREIGN KEY",genomevarapi,genomes,genome_id
+mysql,GenomeVarAPI,chromosomes,reference,3,varchar,255,NULL,NULL,NULL,NULL
+mysql,GenomeVarAPI,chromosomes,start,4,int,NULL,NULL,NULL,NULL,NULL
+mysql,GenomeVarAPI,chromosomes,end,5,int,NULL,NULL,NULL,NULL,NULL
+mysql,GenomeVarAPI,genomes,genome_id,1,varchar,255,"PRIMARY KEY",NULL,NULL,NULL
+mysql,GenomeVarAPI,genomes,metadata_json,2,text,65535,NULL,NULL,NULL,NULL
+mysql,GenomeVarAPI,varients,varient_id,1,int,NULL,"PRIMARY KEY",NULL,NULL,NULL
+mysql,GenomeVarAPI,varients,chromosome_id,2,varchar,255,"FOREIGN KEY",genomevarapi,chromosomes,chromosome_id
+mysql,GenomeVarAPI,varients,position,3,int,NULL,NULL,NULL,NULL,NULL
+mysql,GenomeVarAPI,varients,vcf_id,4,varchar,255,NULL,NULL,NULL,NULL
+mysql,GenomeVarAPI,varients,ref,5,varchar,255,NULL,NULL,NULL,NULL
+mysql,GenomeVarAPI,varients,alt,6,varchar,255,NULL,NULL,NULL,NULL
+mysql,GenomeVarAPI,varients,quality,7,float,NULL,NULL,NULL,NULL,NULL
+mysql,GenomeVarAPI,varients,filter,8,varchar,255,NULL,NULL,NULL,NULL
+mysql,GenomeVarAPI,varients,info,9,text,65535,NULL,NULL,NULL,NULL
+mysql,GenomeVarAPI,varients,format,10,text,65535,NULL,NULL,NULL,NULL
+mysql,GenomeVarAPI,varients,genotype,11,text,65535,NULL,NULL,NULL,NULL
+mysql,GenomeVarAPI,varients,snpeff_match,12,text,65535,NULL,NULL,NULL,NULL
+mysql,GenomeVarAPI,varients,is_snp,13,tinyint,NULL,NULL,NULL,NULL,NULL
+mysql,GenomeVarAPI,varients,genome_id,14,varchar,255,"FOREIGN KEY",genomevarapi,genomes,genome_id
+mysql,GenomeVarAPI,varients,gene_name,15,text,65535,NULL,NULL,NULL,NULL
