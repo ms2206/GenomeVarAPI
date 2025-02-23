@@ -54,10 +54,10 @@ fi
 
 # Check the exit status of the last command
 if [ $? -ne 0 ]; then
-    echo 'Failed to apply schema to the SQLite database.'
+    echo 'Failed to create the Python environment.'
     exit 1
 fi
-echo 'Schema applied successfully.'
+echo 'Python environment created successfully.'
 
 
 # Initialize the database
