@@ -20,12 +20,13 @@ DB_SCHEMA='src/db/schema.sql'
 VCF_PARSER='src/utils/parse_vcf.py'
 CONDA_ENV_PATH='src/utils/genomeVarAPI_pyenv_3.9'
 SERVER_INIT='src/api/server.js'
+DATE=$(date +"%d-%m-%Y %H:%M:%S")
 
-echo "Tool started at: $(date +"%d-%m-%Y %H:%M:%S")"
+echo "[LOG] - ${DATE} -- Tool started at: ${DATE}"
 
 # User option to start server only
 if [ "$1" == "--server-only" ]; then
-    echo 'Starting the Node.js server...'
+    echo "[LOG] - ${DATE} -- Starting the Node.js server..."
     node ${SERVER_INIT}
     exit 0
 fi
@@ -33,12 +34,12 @@ fi
 
 # Check if the environment 'genomeVarAPI_pyenv_3.9' exists
 if [ -d "${ENV_PATH}" ]; then
-    echo 'The environment "genomeVarAPI_pyenv_3.9" already exists.'
+    echo "[LOG] - ${DATE} -- The environment "genomeVarAPI_pyenv_3.9" already exists."
     # Activate the virtual environment
     source ${ENV_PATH}/bin/activate
     # conda activate genomeVarAPI_pyenv_3.9
 else
-    echo 'The environment "genomeVarAPI_pyenv_3.9" does not exist. Creating it now...'
+    echo "[LOG] - ${DATE} -- The environment 'genomeVarAPI_pyenv_3.9' does not exist. Creating it now..."
     # Create a virtual environment from yml file
     # conda env create --prefix ${CONDA_ENV_PATH} -f src/utils/environment.yml
     # conda activate genomeVarAPI_pyenv_3.9
@@ -59,45 +60,45 @@ fi
 
 # Check the exit status of the last command
 if [ $? -ne 0 ]; then
-    echo 'Failed to create the Python environment.'
+    echo "[LOG] - ${DATE} -- Failed to create the Python environment."
     exit 1
 fi
-echo 'Python environment created successfully.'
+echo "[LOG] - ${DATE} -- Python environment created successfully."
 
 
 # Initialize the database
-echo 'Initializing the SQLite database...'
+echo "[LOG] - ${DATE} -- Initializing the SQLite database..."
 sqlite3 ${DB_FILEPATH} < ${DB_SCHEMA}
 
 # Check the exit status of the last command
 if [ $? -ne 0 ]; then
-    echo 'Failed to apply schema to the SQLite database.'
+    echo "[LOG] - ${DATE} -- Failed to apply schema to the SQLite database."
     exit 1
 fi
-echo 'Schema applied successfully.'
+echo "[LOG] - ${DATE} -- Schema applied successfully."
 
 # Run python tool to parse VCF files
-echo 'Parsing VCF file using Python script...'
-echo 'Note: This may take a while depending on the size of the VCF file(s) provided.'
+echo "[LOG] - ${DATE} -- Parsing VCF file using Python script..."
+echo "[LOG] - ${DATE} -- Note: This may take a while depending on the size of the VCF file(s) provided."
 python3 ${VCF_PARSER}
 
 # Check the exit status of the last command
 if [ $? -ne 0 ]; then
-    echo 'Failed to parse VCF using the Python script.'
+    echo "[LOG] - ${DATE} -- Failed to parse VCF using the Python script."
     exit 1
 fi
-echo 'VCF parsed successfully.'
+echo "[LOG] - ${DATE} -- VCF parsed successfully."
 
 # Start the server
-echo 'Starting the Node.js server...'
+echo "[LOG] - ${DATE} -- Starting the Node.js server..."
 node ${SERVER_INIT}
 
 # Check the exit status of the last command
 if [ $? -ne 0 ]; then
-    echo 'Failed to start the Node.js server.'
+    echo "[LOG] - ${DATE} -- Failed to start the Node.js server."
     exit 1
 fi
-echo 'Node.js server started successfully.'
+echo "[LOG] - ${DATE} -- Node.js server started successfully."
 
 # Print the finish time of the script
-echo "Script finished at: $(date +"%d-%m-%Y %H:%M:%S")"
+echo "[LOG] - ${DATE} -- Script finished at: ${DATE}"
