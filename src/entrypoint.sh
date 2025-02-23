@@ -33,10 +33,12 @@ fi
 # Check if the environment 'genomeVarAPI_pyenv_3.9' exists
 if conda env list | grep -q 'genomeVarAPI_pyenv_3.90'; then
     echo 'The environment "genomeVarAPI_pyenv_3.9" already exists.'
+    conda activate genomeVarAPI_pyenv_3.9
 else
     echo 'The environment "genomeVarAPI_pyenv_3.9" does not exist. Creating it now...'
     # Create a virtual environment from yml file
-    conda env create -f src/utils/environment.yml   
+    conda env create -f src/utils/environment.yml
+    conda activate genomeVarAPI_pyenv_3.9
 fi
 
 # Initialize the database
