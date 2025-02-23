@@ -1,23 +1,29 @@
 <h1>GenomeVarAPI USER GUIDE </h1>
 
-<h3>Overview</h3>
+<h2>Overview</h2>
 <div>
 
 GenomeVarAPI is a lunix-based tool for parsing and interacting with VCF (Variant Call Format) files.
 The tool has 3 elements: a python parsing module, an sqlite database, and a REST API for end-user interface.
 
+<em> The tool is not gauenteed to work on Windows PC and makes no claims to be platform independant. </em>
+
 </div>
 
-<h3>Getting Started</h3>
+<h2>Getting Started</h2>
 <div>
 To download the tool: <br>
+
 ```
 git clone https://github.com/ms2206/GenomeVarAPI.git
 ```
 
 TODO: Add docker image. use ./src/entrypoint.sh as a wrapper.
 
-<h5>>>Initialize the database</h5>
+
+
+
+<h5>>> Initialize the database</h5>
 
 A schema `src/db/schema.sql` script is provided which contains table declarations for the database. This must be run first.
 To run this file execute the below code:<br>
@@ -25,21 +31,29 @@ To run this file execute the below code:<br>
 sqlite3 src/db/vcf_db.sqlite3 < src/db/schema.sql
 ```
 
-<h5>>>Populate the database</h5>
+<h5>>> Populate the database</h5>
 
 One of the core features of this tool as a VCF parser written in python `src/utils/parse_vcf.py`.
 
 The python tool requires a virtual environment setup. It is recommend to use <a href="https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html">conda</a> for this installation. The tool requires python version 3.9.*.
 
 ```
+# Create a virtual environment from yml file
 conda env create -f src/utils/environment.yml
 ```
 
-<h6>Alternative installation:</h6>
+Alternative installation:
+An alternative way to set up the required python environment without installing conda is as follows.
+
 ```
-conda create --name genomeVarAPI_pyenv_3.9 python=3.9
-conda activate genomeVarAPI_pyenv_3.9
-conda install regex
+# Create a virtual environment
+python3.9 -m venv genomeVarAPI_pyenv_3.9
+
+# Activate the virtual environment
+source genomeVarAPI_pyenv_3.9/bin/activate
+
+# Install the packages using pip
+pip install regex
 pip install "setuptools<58" --upgrade
 pip install pyvcf
 ```
@@ -72,6 +86,7 @@ The API has 6 main endpoints:
 * api/genomes/:genome_id/indels<br>
 * api/genomes/:genome_id/:chromosome_id/:mbp?<br>
 * api/variants/gene/:gene_name<br>
+<br>
 </div>
 
 <div>
