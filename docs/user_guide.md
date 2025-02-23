@@ -112,7 +112,14 @@ The API has 6 main endpoints:
 
 
 ```
-npm install
+# check node exists
+node -v
+nmp -v
+```
+```
+npm install express
+npm install sqlite3
+npm install path
 ```
 
 </div>

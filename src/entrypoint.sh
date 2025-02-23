@@ -7,7 +7,8 @@
 #              if not, it creates the environment. It then initializes the
 #              SQLite database, parses VCF files, and starts the Node.js server.
 #
-# Parameters: --server-only: Start the Node.js server only.      
+# Parameters: --server-only: Start the Node.js server only.
+# Dependencies: conda, sqlite3, python, node.js      
 # Author: Matthew Spriggs
 # Date: 2025-02-23
 # Usage: ./entrypoint.sh [--server-only]
