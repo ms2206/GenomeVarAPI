@@ -18,6 +18,7 @@
 DB_FILEPATH='src/db/vcf_db.sqlite3'
 DB_SCHEMA='src/db/schema.sql'
 VCF_PARSER='src/utils/parse_vcf.py'
+CONDA_ENV_PATH='src/utils/bio_python_base_python_3.9'
 SERVER_INIT='src/api/server.js'
 
 echo "Tool started at: $(date +"%d-%m-%Y %H:%M:%S")"
@@ -31,13 +32,13 @@ fi
 
 
 # Check if the environment 'genomeVarAPI_pyenv_3.9' exists
-if conda env list | grep -q 'genomeVarAPI_pyenv_3.9'; then
+if conda env list | grep -q ${CONDA_ENV_PATH}; then
     echo 'The environment "genomeVarAPI_pyenv_3.9" already exists.'
     conda activate genomeVarAPI_pyenv_3.9
 else
     echo 'The environment "genomeVarAPI_pyenv_3.9" does not exist. Creating it now...'
     # Create a virtual environment from yml file
-    conda env create -f src/utils/environment.yml
+    conda env create --prefix ${CONDA_ENV_PATH} -f src/utils/environment.yml
     conda activate genomeVarAPI_pyenv_3.9
 fi
 
