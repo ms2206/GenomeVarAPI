@@ -38,9 +38,27 @@ if conda env list | grep -q ${CONDA_ENV_PATH}; then
 else
     echo 'The environment "genomeVarAPI_pyenv_3.9" does not exist. Creating it now...'
     # Create a virtual environment from yml file
-    conda env create --prefix ${CONDA_ENV_PATH} -f src/utils/environment.yml
-    conda activate genomeVarAPI_pyenv_3.9
+    # conda env create --prefix ${CONDA_ENV_PATH} -f src/utils/environment.yml
+    # conda activate genomeVarAPI_pyenv_3.9
+    # Create a virtual environment
+    python3.9 -m venv ${CONDA_ENV_PATH}
+
+    # Activate the virtual environment
+    source genomeVarAPI_pyenv_3.9/bin/activate
+
+    # Install the packages using pip
+    pip install regex
+    pip install "setuptools<58" --upgrade
+    pip install pyvcf
 fi
+
+# Check the exit status of the last command
+if [ $? -ne 0 ]; then
+    echo 'Failed to apply schema to the SQLite database.'
+    exit 1
+fi
+echo 'Schema applied successfully.'
+
 
 # Initialize the database
 echo 'Initializing the SQLite database...'
