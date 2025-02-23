@@ -49,7 +49,7 @@ else
     sleep 5
 
     # Activate the virtual environment
-    source ${CONDA_ENV_PATH}/genomeVarAPI_pyenv_3.9/bin/activate
+    source ${CONDA_ENV_PATH}/bin/activate
 
     # Install the packages using pip
     pip install regex
