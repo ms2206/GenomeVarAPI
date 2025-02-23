@@ -46,9 +46,12 @@ grep "WARNING" src/utils/parse_vcf.log
 
 why was python chosen instead of just a js application, design choice
 
-limitations of ReGex
+limitations of ReGex:: two regex queries offer limitaions EFF (what is ANN or other)mRNA what if not mRNA gene
+
+GENOTYPES is poorly formatted
 
 
+if you add same vcf file to /data/raw it will likely update varients table -- look like duplicated SNPs and INDELs
 
 <h3>Documentation</h3>
 <ul>
