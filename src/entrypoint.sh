@@ -8,7 +8,7 @@
 #              SQLite database, parses VCF files, and starts the Node.js server.
 #
 # Parameters: --server-only: Start the Node.js server only.
-# Dependencies: conda, sqlite3, python, node.js      
+# Dependencies: sqlite3, python, node.js      
 # Author: Matthew Spriggs
 # Date: 2025-02-23
 # Usage: ./entrypoint.sh [--server-only]
@@ -18,7 +18,7 @@
 DB_FILEPATH='src/db/vcf_db.sqlite3'
 DB_SCHEMA='src/db/schema.sql'
 VCF_PARSER='src/utils/parse_vcf.py'
-CONDA_ENV_PATH='src/utils/genomeVarAPI_pyenv_3.9'
+ENV_PATH='src/utils/genomeVarAPI_pyenv_3.9'
 SERVER_INIT='src/api/server.js'
 DATE=$(date +"%d-%m-%Y %H:%M:%S")
 
@@ -37,20 +37,16 @@ if [ -d "${ENV_PATH}" ]; then
     echo "[LOG] - ${DATE} -- The environment "genomeVarAPI_pyenv_3.9" already exists."
     # Activate the virtual environment
     source ${ENV_PATH}/bin/activate
-    # conda activate genomeVarAPI_pyenv_3.9
 else
     echo "[LOG] - ${DATE} -- The environment 'genomeVarAPI_pyenv_3.9' does not exist. Creating it now..."
-    # Create a virtual environment from yml file
-    # conda env create --prefix ${CONDA_ENV_PATH} -f src/utils/environment.yml
-    # conda activate genomeVarAPI_pyenv_3.9
     # Create a virtual environment
-    python3 -m venv ${CONDA_ENV_PATH}
+    python3 -m venv ${ENV_PATH}
 
     # add sleep to allow for the environment to be created
     sleep 5
 
     # Activate the virtual environment
-    source ${CONDA_ENV_PATH}/bin/activate
+    source ${ENV_PATH}/bin/activate
 
     # Install the packages using pip
     pip install regex
