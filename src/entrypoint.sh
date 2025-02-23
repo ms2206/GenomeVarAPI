@@ -19,12 +19,13 @@ DB_FILEPATH='src/db/vcf_db.sqlite3'
 DB_SCHEMA='src/db/schema.sql'
 VCF_PARSER='src/utils/parse_vcf.py'
 ENV_PATH='src/utils/genomeVarAPI_pyenv_3.9'
+PACKAGE_JSON='./package.json'
 SERVER_INIT='src/api/server.js'
 DATE=$(date +"%d-%m-%Y %H:%M:%S")
 
 echo "[LOG] - ${DATE} -- Tool started at: ${DATE}"
 
-# User option to start server only
+# User option to start server only, this option assumes the node modules are installed, if not run without this flag first.
 if [ "$1" == "--server-only" ]; then
     echo "[LOG] - ${DATE} -- Starting the Node.js server..."
     node ${SERVER_INIT}
@@ -84,6 +85,19 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 echo "[LOG] - ${DATE} -- VCF parsed successfully."
+
+# Load node modules
+if [ -f ${PACKAGE_JSON} ]; then
+    echo "[LOG] - ${DATE} -- Installing Node.js modules..."
+    npm install
+    echo "[LOG] - ${DATE} -- Node.js modules installed successfully."
+else
+    echo "[LOG] - ${DATE} -- No package.json file found. Ensure node is installed."
+    echo "[LOG] - ${DATE} -- Run 'node -v' to check if node is installed."
+    echo "[LOG] - ${DATE} -- Run 'npm -v' to check if npm is installed."
+    exit 1
+fi
+
 
 # Start the server
 echo "[LOG] - ${DATE} -- Starting the Node.js server..."
