@@ -1,12 +1,42 @@
 #!/bin/bash
 
-# constants
+################################################################################
+# Script Name: entrypoint.sh
+# Description: This script acts as a wrapper to start the application.
+#              The script checks if the required python environment exists,
+#              if not, it creates the environment. It then initializes the
+#              SQLite database, parses VCF files, and starts the Node.js server.
+#
+# Parameters: --server-only: Start the Node.js server only.      
+# Author: Matthew Spriggs
+# Date: 2025-02-23
+# Usage: ./entrypoint.sh [--server-only]
+################################################################################
+
+# Constants
 DB_FILEPATH='src/db/vcf_db.sqlite3'
 DB_SCHEMA='src/db/schema.sql'
 VCF_PARSER='src/utils/parse_vcf.py'
 SERVER_INIT='src/api/server.js'
 
 echo "Tool started at: $(date +"%d-%m-%Y %H:%M:%S")"
+
+# User option to start server only
+if [ "$1" == "--server-only" ]; then
+    echo 'Starting the Node.js server...'
+    node ${SERVER_INIT}
+    exit 0
+fi
+
+
+# Check if the environment 'genomeVarAPI_pyenv_3.9' exists
+if conda env list | grep -q 'genomeVarAPI_pyenv_3.90'; then
+    echo 'The environment "genomeVarAPI_pyenv_3.9" already exists.'
+else
+    echo 'The environment "genomeVarAPI_pyenv_3.9" does not exist. Creating it now...'
+    # Create a virtual environment from yml file
+    conda env create -f src/utils/environment.yml   
+fi
 
 # Initialize the database
 echo 'Initializing the SQLite database...'
