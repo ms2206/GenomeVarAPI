@@ -21,7 +21,9 @@ git clone https://github.com/ms2206/GenomeVarAPI.git
 TODO: Add docker image. use ./src/entrypoint.sh as a wrapper.
 
 1. <b>Option 1</b> <br>
+./src/entrypoint.sh 
 
+./src/entrypoint.sh --server-only
 
 ##########
 ##########
