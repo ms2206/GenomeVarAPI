@@ -75,7 +75,7 @@ echo "[LOG] - ${DATE} -- Schema applied successfully."
 
 # Run python tool to parse VCF files
 echo "[LOG] - ${DATE} -- Parsing VCF file using Python script..."
-echo "[LOG] - ${DATE} -- Note: This may take a while depending on the size of the VCF file(s) provided."
+echo "[LOG] - ${DATE} -- Note: This may take a while depending on CPU size and the size of the VCF file(s) provided."
 python3 ${VCF_PARSER}
 
 # Check the exit status of the last command
