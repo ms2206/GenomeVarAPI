@@ -18,7 +18,7 @@
 DB_FILEPATH='src/db/vcf_db.sqlite3'
 DB_SCHEMA='src/db/schema.sql'
 VCF_PARSER='src/utils/parse_vcf.py'
-CONDA_ENV_PATH='src/utils/bio_python_base_python_3.9'
+CONDA_ENV_PATH='src/utils/genomeVarAPI_pyenv_3.9'
 SERVER_INIT='src/api/server.js'
 
 echo "Tool started at: $(date +"%d-%m-%Y %H:%M:%S")"
