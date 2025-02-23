@@ -59,7 +59,7 @@ if [ $? -ne 0 ]; then
     echo "[LOG] - ${DATE} -- Failed to create the Python environment."
     exit 1
 fi
-echo "[LOG] - ${DATE} -- Python environment created successfully."
+echo "[LOG] - ${DATE} -- Python environment loaded successfully."
 
 
 # Initialize the database
