@@ -43,7 +43,7 @@ else
     # conda env create --prefix ${CONDA_ENV_PATH} -f src/utils/environment.yml
     # conda activate genomeVarAPI_pyenv_3.9
     # Create a virtual environment
-    python3.9 -m venv ${CONDA_ENV_PATH}
+    python3 -m venv ${CONDA_ENV_PATH}
 
     # add sleep to allow for the environment to be created
     sleep 5
