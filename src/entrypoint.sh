@@ -90,7 +90,16 @@ echo "[LOG] - ${DATE} -- VCF parsed successfully."
 if [ -f ${PACKAGE_JSON} ]; then
     echo "[LOG] - ${DATE} -- Installing Node.js modules..."
     npm install
-    echo "[LOG] - ${DATE} -- Node.js modules installed successfully."
+
+    # Check the exit status of the last command
+    if [ $? -ne 0 ]; then
+        echo "[LOG] - ${DATE} -- Failed to install Node.js modules."
+        echo "[LOG] - ${DATE} -- Run 'node -v' to check if node is installed."
+        echo "[LOG] - ${DATE} -- Run 'npm -v' to check if npm is installed."
+        exit 1
+    else
+        echo "[LOG] - ${DATE} -- Node.js modules installed successfully."
+    fi
 else
     echo "[LOG] - ${DATE} -- No package.json file found. Ensure node is installed."
     echo "[LOG] - ${DATE} -- Run 'node -v' to check if node is installed."

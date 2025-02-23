@@ -22,6 +22,7 @@
   "homepage": "https://github.com/ms2206/GenomeVarAPI#readme",
   "dependencies": {
     "express": "^4.21.2",
+    "marked": "^15.0.7",
     "sqlite3": "^5.1.7"
   }
 }
