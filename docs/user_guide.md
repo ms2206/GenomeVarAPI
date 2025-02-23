@@ -1,4 +1,4 @@
-<h1>GenomeVarAPI USER GUIDE </h1>
+<h1>GenomeVarAPI User Guide </h1>
 
 <h2>Overview</h2>
 <div id='overveiw-section'>
@@ -68,23 +68,23 @@ The API has 6 main endpoints:
 <div id='api-endpoints-examples'>
 <ol>
 <li>List all VCF in database.</li>
-<a href="http://localhost:3000/api/genomes">http://localhost:3000/api/genomes</a><br><br>
+<a href='http://localhost:3000/api/genomes'>http://localhost:3000/api/genomes</a><br><br>
 
 <li>List number of variants in each VCF {genome_id} by chromosome.</li>
-<code>http://localhost:3000/api/genomes/RF_001/variants</code><br><br>
+<a href='http://localhost:3000/api/genomes/RF_001/variants'>http://localhost:3000/api/genomes/RF_001/variants</a><br><br>
 
 <li>List number of SNPs in each VCF {genome_id} by chromosome.</li>
-<code>http://localhost:3000/api/genomes/RF_001/snps</code><br><br>
+<a href='http://localhost:3000/api/genomes/RF_001/snps'>http://localhost:3000/api/genomes/RF_001/snps</a><br><br>
 
 <li>List number of INDELs in each VCF {genome_id} by chromosome.</li>
-<code>http://localhost:3000/api/genomes/RF_001/indels</code><br><br>
+<a href='http://localhost:3000/api/genomes/RF_001/indels'>http://localhost:3000/api/genomes/RF_001/indels</a><br><br>
 
 <li>List genes impacted by moderate or high impact variants in a specific chromosome region for a specific VCF {genome_id}.</li>
 <em>:mbp is an optional parameter to be the number of mbp from the start of the chromosome. If NULL then the whole chromosome will be shown.</em><br>
-<code>http://localhost:3000/api/genomes/RF_001/chr03/20</code><br><br>
+<a href='http://localhost:3000/api/genomes/RF_001/chr03/20'>http://localhost:3000/api/genomes/RF_001/chr03/20</a><br><br>
 
 <li>List sample which contains a variant that impacts a specific gene.</li>
-<code>http://localhost:3000/api/variants/gene/Solyc03g006480.1.1</code><br><br>
+<a href='http://localhost:3000/api/variants/gene/Solyc03g006480.1.1'>http://localhost:3000/api/variants/gene/Solyc03g006480.1.1</a><br><br>
 </ol>
 </div>
 
@@ -92,6 +92,6 @@ The API has 6 main endpoints:
 
 </div>
 
-<h3> Features and Functionality</h3>
+<h3>Technical Documentation</h3>
 
 <h3> Support and Feedback</h3>
