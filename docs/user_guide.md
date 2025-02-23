@@ -20,9 +20,12 @@ git clone https://github.com/ms2206/GenomeVarAPI.git
 
 TODO: Add docker image. use ./src/entrypoint.sh as a wrapper.
 
+1. <b>Option 1</b> <br>
 
 
-
+##########
+##########
+##########
 <h5>>> Initialize the database</h5>
 
 A schema `src/db/schema.sql` script is provided which contains table declarations for the database. This must be run first.

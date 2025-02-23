@@ -32,9 +32,11 @@ fi
 
 
 # Check if the environment 'genomeVarAPI_pyenv_3.9' exists
-if conda env list | grep -q ${CONDA_ENV_PATH}; then
+if [ -d "${ENV_PATH}" ]; then
     echo 'The environment "genomeVarAPI_pyenv_3.9" already exists.'
-    conda activate genomeVarAPI_pyenv_3.9
+    # Activate the virtual environment
+    source ${ENV_PATH}/bin/activate
+    # conda activate genomeVarAPI_pyenv_3.9
 else
     echo 'The environment "genomeVarAPI_pyenv_3.9" does not exist. Creating it now...'
     # Create a virtual environment from yml file
