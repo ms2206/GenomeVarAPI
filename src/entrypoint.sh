@@ -45,6 +45,9 @@ else
     # Create a virtual environment
     python3.9 -m venv ${CONDA_ENV_PATH}
 
+    # add sleep to allow for the environment to be created
+    sleep 5
+
     # Activate the virtual environment
     source ${CONDA_ENV_PATH}/genomeVarAPI_pyenv_3.9/bin/activate
 
