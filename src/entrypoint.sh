@@ -74,7 +74,7 @@ echo 'Schema applied successfully.'
 # Run python tool to parse VCF files
 echo 'Parsing VCF file using Python script...'
 echo 'Note: This may take a while depending on the size of the VCF file(s) provided.'
-python ${VCF_PARSER}
+python3 ${VCF_PARSER}
 
 # Check the exit status of the last command
 if [ $? -ne 0 ]; then
