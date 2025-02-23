@@ -31,7 +31,7 @@ fi
 
 
 # Check if the environment 'genomeVarAPI_pyenv_3.9' exists
-if conda env list | grep -q 'genomeVarAPI_pyenv_3.90'; then
+if conda env list | grep -q 'genomeVarAPI_pyenv_3.9'; then
     echo 'The environment "genomeVarAPI_pyenv_3.9" already exists.'
     conda activate genomeVarAPI_pyenv_3.9
 else
