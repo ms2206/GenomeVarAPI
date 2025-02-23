@@ -8,10 +8,15 @@ The tool has 3 elements: a python parsing module, an sqlite database, and a REST
 
 <em> The tool is not guaranteed to work on Windows PC and makes no claims to be platform independent. </em>
 
+
+<img src='./figures/overview.svg' alt='Flowchart of overview'>
+
 </div>
+
 
 <h2>Getting Started</h2>
 <div id='getting-started-section'>
+Tool Dependencies: python, node, npm.
 <h3>Download the tool</h3>
 
 GitHub clone:
@@ -52,16 +57,18 @@ Flowchart for entrypoint.sh: <br>
 <h2>Interacting with endpoints</h2>
 Upon running the entrypoint script you shall have a server running on http://localhost:3000.
 <br><br>
-The API has 6 main endpoints:
+The API has 8 main endpoints:
 
 <div id='api-endpoints-list'>
 <ul>
 <li><code>api/genomes</code></li>
+<li><code>api/genomes/:genome_id</code></li>
 <li><code>api/genomes/:genome_id/variants</code></li>
 <li><code>api/genomes/:genome_id/snps</code></li>
 <li><code>api/genomes/:genome_id/indels</code></li>
 <li><code>api/genomes/:genome_id/:chromosome_id/:mbp?</code></li>
 <li><code>api/variants/gene/:gene_name</code></li>
+<li><code>api/variants/:genome_id</code></li>
 </ul><br>
 </div>
 
@@ -69,6 +76,9 @@ The API has 6 main endpoints:
 <ol>
 <li>List all VCF in database.</li>
 <a href='http://localhost:3000/api/genomes'>http://localhost:3000/api/genomes</a><br><br>
+
+<li>List metadata from a given VCF in database.</li>
+<a href='http://localhost:3000/api/genomes/RF_041/'>http://localhost:3000/api/genomes/RF_041/</a><br><br>
 
 <li>List number of variants in each VCF {genome_id} by chromosome.</li>
 <a href='http://localhost:3000/api/genomes/RF_001/variants'>http://localhost:3000/api/genomes/RF_001/variants</a><br><br>
@@ -83,15 +93,22 @@ The API has 6 main endpoints:
 <em>:mbp is an optional parameter to be the number of mbp from the start of the chromosome. If NULL then the whole chromosome will be shown.</em><br>
 <a href='http://localhost:3000/api/genomes/RF_001/chr03/20'>http://localhost:3000/api/genomes/RF_001/chr03/20</a><br><br>
 
-<li>List sample which contains a variant that impacts a specific gene.</li>
+<li>List genomes which contains a variant that impacts a specific gene.</li>
 <a href='http://localhost:3000/api/variants/gene/Solyc03g006480.1.1'>http://localhost:3000/api/variants/gene/Solyc03g006480.1.1</a><br><br>
+
+<li>List vartiants from a specific genome.</li>
+<a href='http://localhost:3000/api/variants/RF_041'>http://localhost:3000/api/variants/RF_041</a><br><br>
 </ol>
 </div>
-
-
-
 </div>
 
-<h3>Technical Documentation</h3>
+<h2>Documentation</h2>
+<ul>
+<li><a href='http://localhost:3000/'>User Documentation</a></li>
+<li><a href='http://localhost:3000/database-technical-docs'>Database Techincal Documentation</a></li>
+<li><a href='http://localhost:3000/parser-technical-docs'>VCF Parser Techincal Documentation</a></li>
+<li><a href='http://localhost:3000/api-technical-docs'>API Techincal Documentation</a></li>
 
 <h3> Support and Feedback</h3>
+
+parse_vcf_technical_docs

@@ -236,6 +236,51 @@ db.all(query, [req.params.genome_id, req.params.chromosome_id, bp],
         });
     });
     
- 
+    /*
+    Return metadata for a specific genome
+    */
+   router.get('/genomes/:genome_id/', function(req, res) {
+    
+    const query = `
+    SELECT 
+        *
+    FROM genomes
+    WHERE genome_id = ?
+    ;`
+
+    db.all(query, [req.params.genome_id],
+        function(err, rows){
+            if(err){
+                console.error(err);
+                res.status(500).send('Internal server error');
+            } else {
+                res.status(200).json(rows);
+            }
+        });
+    });
+
+
+// TODO add SELECT * FROM variants WHERE genome_id = ?;
+
+router.get('/variants/:genome_id/', function(req, res) {
+
+    const query = `
+    SELECT 
+        *
+    FROM variants
+    WHERE genome_id = ?
+    ;`
+
+    db.all(query, [req.params.genome_id],
+        function(err, rows){
+            if(err){
+                console.error(err);
+                res.status(500).send('Internal server error');
+            } else {
+                res.status(200).json(rows);
+            }
+        });
+    }
+);
 
 module.exports = router;

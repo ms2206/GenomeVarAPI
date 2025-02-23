@@ -42,3 +42,17 @@ To identify warning messages;<br>
 ```
 grep "WARNING" src/utils/parse_vcf.log
 ```
+
+
+why was python chosen instead of just a js application, design choice
+
+limitations of ReGex
+
+
+
+<h3>Documentation</h3>
+<ul>
+<li><a href='http://localhost:3000/'>User Documentation</a></li>
+<li><a href='http://localhost:3000/database-technical-docs'>Database Techincal Documentation</a></li>
+<li><a href='http://localhost:3000/parser-technical-docs'>VCF Parser Techincal Documentation</a></li>
+<li><a href='http://localhost:3000/api-technical-docs'>API Techincal Documentation</a></li>
