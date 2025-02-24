@@ -52,10 +52,11 @@ Parts of the python tool over-rely on RegEx to extract information, especially f
 The tool uses JSON to dump some of the more complex data structures from the VCF object. Future releases will handle parsing the INFO, GENOTYPE, and METADATA objects to flatten these structures and provide the user with better access to this data. This was a conscious decision to balance time and effort when developing MVP.
 
 <h5>Duplication of VCF files</h5>
-The <code>load_variants_table</code> generates a unique primary on import, which means there is no pre-existing check to test if this variant has alread been added. If the user adds a duplicate VCF file into <code>./data.raw</code> then the <code>genomes</code> table and <code>chromosomes</code> tables <u>will <b>not</b></u> be updated - since these tables have a unique constains check imposed - but the variants <u>will be</u> added to the database, causing the SNP/INDEL endpoints to be inaccurate. This is a known <i>feature</i> (😉), and will be fixed in a furture release. For now, don't add duplicate files...
+The <code>load_variants_table</code> generates a unique primary on import, which means there is no pre-existing check to test if this variant has alread been added. If the user adds a duplicate VCF file into <code>./data.raw</code> then the <code>genomes</code> table and <code>chromosomes</code> tables <u>will <b>not</b></u> be updated - since these tables have a unique constains check imposed - but the variants <u>will be</u> added to the database, causing the SNP/INDEL endpoints to be inaccurate. This is a known <i>feature</i> (😉), and will be fixed in a furture release. The upcomming fix for this will be to generate an MD5 based on chromosome_id + ALT + REF columns and use this MD5 hash as the primary key for the variants table. 
+
+Until then, don't add duplicate files... 
 
 
-if you add same vcf file to /data/raw it will update varients table -- look like duplicated SNPs and INDELs
 
 <h2>Documentation</h2>
 <ul>
