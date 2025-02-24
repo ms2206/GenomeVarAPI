@@ -104,10 +104,11 @@ The API has 8 main endpoints:
 
 <h2>Documentation</h2>
 <ul>
-<li><a href='http://localhost:3000/'>User Documentation</a></li>
-<li><a href='http://localhost:3000/database-technical-docs'>Database Techincal Documentation</a></li>
-<li><a href='http://localhost:3000/parser-technical-docs'>VCF Parser Techincal Documentation</a></li>
-<li><a href='http://localhost:3000/api-technical-docs'>API Techincal Documentation</a></li>
+<li><a href='docs/user_guide.md'>User Documentation</a></li>
+<li><a href='docs/database_technical_docs.md'>Database Technical Documentation</a></li>
+<li><a href='docs/parser_technical_docs.md'>VCF Parser Technical Documentation</a></li>
+<li><a href='docs/api_technical_docs.md'>API Technical Documentation</a></li>
+</ul>
 
 <h3> Support and Feedback</h3>
 
