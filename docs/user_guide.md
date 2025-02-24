@@ -1,5 +1,7 @@
 <h1>GenomeVarAPI User Guide </h1>
 
+Technical Documentation is best viewed from GitHub. See <a hfre='https://github.com/ms2206/GenomeVarAPI/tree/main'>https://github.com/ms2206/GenomeVarAPI/tree/main</a>.
+
 <h2>Overview</h2>
 <div id='overveiw-section'>
 

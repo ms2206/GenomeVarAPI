@@ -1,5 +1,7 @@
 <h1>Schema Technical Documentation</h1>
 
+Technical Documentation is best viewed from GitHub. See <a hfre='https://github.com/ms2206/GenomeVarAPI/tree/main'>https://github.com/ms2206/GenomeVarAPI/tree/main</a>.
+
 <h2>Overview</h2>
 The database consists of 3 tables: genomes, variants and chromosomes.<br>
 
