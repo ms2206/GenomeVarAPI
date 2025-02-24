@@ -1,16 +1,13 @@
-<h5>>> Populate the database</h5>
+<h1>VCF Parser Technical Documentation</h1>
 
+<h2>Overview</h2>
 One of the core features of this tool as a VCF parser written in python `src/utils/parse_vcf.py`.
 
-The python tool requires a virtual environment setup. It is recommend to use <a href="https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html">conda</a> for this installation. The tool requires python version 3.9.*.
+The python tool requires a virtual environment setup. The tool requires python version 3.9.*.
 
-```
-# Create a virtual environment from yml file
-conda env create -f src/utils/environment.yml
-```
+It is reccomened to use the standard installation from the <a href='./user_guide.md'>User Documentation</a> using the
+<code>./src/entrypoint.sh</code>. However, should you will to run this module separately follow the below steps.
 
-Alternative installation:
-An alternative way to set up the required python environment without installing conda is as follows.
 
 ```
 # Create a virtual environment
@@ -35,13 +32,19 @@ This tool will parse each VCF files in `src/data/raw` and load them to the datab
 <strong>Note: This step is quite CPU intensive and can take upto 10 minuets.</strong> 
 
 The tool output logs can be found at `src/utils/parse_vcf.log`. The logs are quite verbos but provide the 
-user with tool to inspect the inner workings of the python code.
+user with tools to inspect the inner workings of the python code.
 
 For example:
 To identify warning messages;<br>
 ```
 grep "WARNING" src/utils/parse_vcf.log
 ```
+<h2>Design Comments</h2>
+
+Python was chosen as the language of choice for this module, in part because there exist existing libraires to parse VCF files. pysam and pyvcf were considered for this tool. pyvcf was chosen for it's lightweight simplicity. Additionally, Python was preferred over a fully integrated JavaScript front-end/back-end solution due to the developers' greater proficiency with Python.
+
+The tool as it stands represent MPV (minimul viable product) meeting user needs assigned in the <a href='./I-BIX-DAT Assignment Brief 2025-1.pdf'>Design Brief</a>
+
 
 
 why was python chosen instead of just a js application, design choice
