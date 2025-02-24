@@ -59,7 +59,25 @@ Until then, don't add duplicate files...
 <h2>Functions and Design Flow</h2>
 <img src='./figures/parser_workflow.svg' alt='Flowchart of parser_workflow'>
 
+```
+def setup_logging(log_file: str):
+    """
+    Set up logging configuration.
 
+    param: filepath to logging file.
+    return logger object from logging.
+    """
+```
+
+```
+def get_vcf_files(dir: str = './data/raw'):
+    """
+    Get a list of VCF files in a directory.
+
+    param directory: str: path to the directory containing VCF files.
+    return: set: set of VCF files in the directory.
+    """
+```
 
 
 <h2>Documentation</h2>
