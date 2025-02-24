@@ -38,6 +38,11 @@ for genome in json['genome_id']:
     print(genome)
 ```
 
+<li><code>api/genomes/:genome_id</code></li>
+This end point will list metadata from a given VCF in database. This is useful if the user wants to inspect the high-level information about the file. It returns a list of dictionaries, with a 'metadata_json' key. Inside this key is a JSON object with data on fileformats, samtoolsVersions, any annotations and reference geneome used.
+
+
+
 <h2>Documentation</h2>
 <ul>
 <li><a href='./user_guide.md'>User Documentation</a></li>
