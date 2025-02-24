@@ -1,2 +1,114 @@
-# GenomeVarAPI
-A REST API service for storing, querying, and visualizing eukaryotic genome variants from annotated VCF files, featuring a relational database and parsing tool for streamlined genomic data management.
+<h1>GenomeVarAPI User Guide </h1>
+
+<h2>Overview</h2>
+<div id='overveiw-section'>
+
+GenomeVarAPI is a linux-based tool for parsing and interacting with VCF (Variant Call Format) files.
+The tool has 3 elements: a python parsing module, an sqlite database, and a REST API for end-user interface.
+
+<em> The tool is not guaranteed to work on Windows PC and makes no claims to be platform independent. </em>
+
+
+<img src='./figures/overview.svg' alt='Flowchart of overview'>
+
+</div>
+
+
+<h2>Getting Started</h2>
+<div id='getting-started-section'>
+Tool Dependencies: python, node, npm.
+<h3>Download the tool</h3>
+
+GitHub clone:
+```
+git clone https://github.com/ms2206/GenomeVarAPI.git
+```
+
+Change directory: <br>
+```
+cd GenomeVarAPI
+```
+
+Run the entrypoint.sh: <br>
+```
+Usage: ./src/entrypoint.sh [--server-only]
+```
+Description: This script acts as a wrapper to start the application. The script checks if the required python environment exists,
+if not, it creates the environment. It then initializes the SQLite database, parses VCF files, installs the node dependencies and
+starts the Node.js server. <br>
+
+The <code>--server-only</code> option is useful if you just want to load the server without re-populating the database. This option assumes
+node the node packages are already installed. <br>
+
+<h3>Adding VCF files</h3>
+Any VCF files placed in the <code>./data.raw</code> directory will be parsed by the tool upon initalization. The current release supports
+parsing VCF files annotated using SnpEff legacy 'EFF' format. The 'ANN' is not yet supported but will be made avaliable in a future release.
+Considering gene annotations, the tool is limited to extracting gene names for 'mRNA' labeled genes, a future release will expand on these capabilities. <br><em>Note: if your annotations do not follow this format the tool should still complete but their annotations and gene names
+will not be entered into the database</em><br><br>
+
+
+
+Flowchart for entrypoint.sh: <br>
+<img src='./figures/entrypoint.svg' alt='Flowchart of entrypoint.sh'>
+
+<i>TODO: Add docker image. use ./src/entrypoint.sh as a wrapper.</i>
+
+</div>
+<h2>Interacting with endpoints</h2>
+Upon running the entrypoint script you shall have a server running on http://localhost:3000.
+<br><br>
+The API has 8 main endpoints:
+
+<div id='api-endpoints-list'>
+<ul>
+<li><code>api/genomes</code></li>
+<li><code>api/genomes/:genome_id</code></li>
+<li><code>api/genomes/:genome_id/variants</code></li>
+<li><code>api/genomes/:genome_id/snps</code></li>
+<li><code>api/genomes/:genome_id/indels</code></li>
+<li><code>api/genomes/:genome_id/:chromosome_id/:mbp?</code></li>
+<li><code>api/variants/gene/:gene_name</code></li>
+<li><code>api/variants/:genome_id</code></li>
+</ul><br>
+</div>
+
+<div id='api-endpoints-examples'>
+<ol>
+<li>List all VCF in database.</li>
+<a href='http://localhost:3000/api/genomes'>http://localhost:3000/api/genomes</a><br><br>
+
+<li>List metadata from a given VCF in database.</li>
+<a href='http://localhost:3000/api/genomes/RF_041/'>http://localhost:3000/api/genomes/RF_041/</a><br><br>
+
+<li>List number of variants in each VCF {genome_id} by chromosome.</li>
+<a href='http://localhost:3000/api/genomes/RF_001/variants'>http://localhost:3000/api/genomes/RF_001/variants</a><br><br>
+
+<li>List number of SNPs in each VCF {genome_id} by chromosome.</li>
+<a href='http://localhost:3000/api/genomes/RF_001/snps'>http://localhost:3000/api/genomes/RF_001/snps</a><br><br>
+
+<li>List number of INDELs in each VCF {genome_id} by chromosome.</li>
+<a href='http://localhost:3000/api/genomes/RF_001/indels'>http://localhost:3000/api/genomes/RF_001/indels</a><br><br>
+
+<li>List genes impacted by moderate or high impact variants in a specific chromosome region for a specific VCF {genome_id}.</li>
+<em>:mbp is an optional parameter to be the number of mbp from the start of the chromosome. If NULL then the whole chromosome will be shown.</em><br>
+<a href='http://localhost:3000/api/genomes/RF_001/chr03/20'>http://localhost:3000/api/genomes/RF_001/chr03/20</a><br><br>
+
+<li>List genomes which contains a variant that impacts a specific gene.</li>
+<a href='http://localhost:3000/api/variants/gene/Solyc03g006480.1.1'>http://localhost:3000/api/variants/gene/Solyc03g006480.1.1</a><br><br>
+
+<li>List vartiants from a specific genome.</li>
+<a href='http://localhost:3000/api/variants/RF_041'>http://localhost:3000/api/variants/RF_041</a><br><br>
+</ol>
+</div>
+</div>
+
+<h2>Documentation</h2>
+<ul>
+<li><a href='http://localhost:3000/'>User Documentation</a></li>
+<li><a href='http://localhost:3000/database-technical-docs'>Database Techincal Documentation</a></li>
+<li><a href='http://localhost:3000/parser-technical-docs'>VCF Parser Techincal Documentation</a></li>
+<li><a href='http://localhost:3000/api-technical-docs'>API Techincal Documentation</a></li>
+
+<h3> Support and Feedback</h3>
+
+parse_vcf_technical_docs
