@@ -106,8 +106,8 @@ The API has 8 main endpoints:
 <ul>
 <li><a href='docs/user_guide.md'>User Documentation</a></li>
 <li><a href='docs/database_technical_docs.md'>Database Technical Documentation</a></li>
-<li><a href='docs/parser_technical_docs.md'>VCF Parser Technical Documentation</a></li>
-<li><a href='docs/api_technical_docs.md'>API Technical Documentation</a></li>
+<li><a href='docs/parse_vcf_technical_docs.md'>VCF Parser Technical Documentation</a></li>
+<li><a href='docs/server_technical_docs.md'>API Technical Documentation</a></li>
 </ul>
 
 <h3> Support and Feedback</h3>
