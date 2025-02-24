@@ -43,7 +43,7 @@ grep "WARNING" src/utils/parse_vcf.log
 
 Python was chosen as the language of choice for this module, in part because there exist existing libraires to parse VCF files. pysam and pyvcf were considered for this tool. pyvcf was chosen for it's lightweight simplicity. Additionally, Python was preferred over a fully integrated JavaScript front-end/back-end solution due to the developers' greater proficiency with Python.
 
-The tool as it stands represent MPV (minimul viable product) meeting user needs assigned in the <a href='./I-BIX-DAT Assignment Brief 2025-1.pdf'>Design Brief</a>
+The tool as it stands represent MPV (minimul viable product) meeting user needs assigned in the <a href='../I-BIX-DAT Assignment Brief 2025-1.pdf'>Design Brief</a>
 
 
 
