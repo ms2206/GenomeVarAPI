@@ -75,29 +75,29 @@ The API has 8 main endpoints:
 <div id='api-endpoints-examples'>
 <ol>
 <li>List all VCF in database.</li>
-<a href='http://localhost:3000/api/genomes'>http://localhost:3000/api/genomes</a><br><br>
+<code>http://localhost:3000/api/genomes</code><br><br>
 
 <li>List metadata from a given VCF in database.</li>
-<a href='http://localhost:3000/api/genomes/RF_041/'>http://localhost:3000/api/genomes/RF_041/</a><br><br>
+<code>http://localhost:3000/api/genomes/RF_041/</code><br><br>
 
 <li>List number of variants in each VCF {genome_id} by chromosome.</li>
-<a href='http://localhost:3000/api/genomes/RF_001/variants'>http://localhost:3000/api/genomes/RF_001/variants</a><br><br>
+<code>http://localhost:3000/api/genomes/RF_001/variants</code><br><br>
 
 <li>List number of SNPs in each VCF {genome_id} by chromosome.</li>
-<a href='http://localhost:3000/api/genomes/RF_001/snps'>http://localhost:3000/api/genomes/RF_001/snps</a><br><br>
+<code>http://localhost:3000/api/genomes/RF_001/snps</code><br><br>
 
 <li>List number of INDELs in each VCF {genome_id} by chromosome.</li>
-<a href='http://localhost:3000/api/genomes/RF_001/indels'>http://localhost:3000/api/genomes/RF_001/indels</a><br><br>
+<code>http://localhost:3000/api/genomes/RF_001/indels</code><br><br>
 
 <li>List genes impacted by moderate or high impact variants in a specific chromosome region for a specific VCF {genome_id}.</li>
 <em>:mbp is an optional parameter to be the number of mbp from the start of the chromosome. If NULL then the whole chromosome will be shown.</em><br>
-<a href='http://localhost:3000/api/genomes/RF_001/chr03/20'>http://localhost:3000/api/genomes/RF_001/chr03/20</a><br><br>
+<code>http://localhost:3000/api/genomes/RF_001/chr03/20</code><br><br>
 
 <li>List genomes which contains a variant that impacts a specific gene.</li>
-<a href='http://localhost:3000/api/variants/gene/Solyc03g006480.1.1'>http://localhost:3000/api/variants/gene/Solyc03g006480.1.1</a><br><br>
+<code>http://localhost:3000/api/variants/gene/Solyc03g006480.1.1</code><br><br>
 
 <li>List vartiants from a specific genome.</li>
-<a href='http://localhost:3000/api/variants/RF_041'>http://localhost:3000/api/variants/RF_041</a><br><br>
+<code>http://localhost:3000/api/variants/RF_041</code><br><br>
 </ol>
 </div>
 </div>
