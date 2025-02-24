@@ -71,26 +71,33 @@ def import_vcf(vcf_filepath: str) -> vcf.Reader:
 
     logger.info(f'Importing VCF file from: {vcf_filepath}')
 
-    #TODO: add try except block for file not found error
-    vcf_reader = vcf.Reader(open(vcf_filepath, 'r'))
+    try:
+        #TODO: add try except block for file not found error
+        vcf_reader = vcf.Reader(open(vcf_filepath, 'r'))
 
-    # consume first row to access genome_id from record
-    first_record = next(vcf_reader)
+        # consume first row to access genome_id from record
+        first_record = next(vcf_reader)
 
-    # access the genome_id from first record
-    genome_id = first_record.samples[0].sample
+        # access the genome_id from first record
+        genome_id = first_record.samples[0].sample
 
-    logger.info(f'Extracted genome_id: {genome_id} from the first record')
+        logger.info(f'Extracted genome_id: {genome_id} from the first record')
 
-    # Rewind the file to the beginning
-    vcf_reader = vcf.Reader(open(vcf_filepath, 'r'))
+        # Rewind the file to the beginning
+        vcf_reader = vcf.Reader(open(vcf_filepath, 'r'))
 
-    # add genome_id to metadata object
-    vcf_reader.metadata['genome_id'] = genome_id
+        # add genome_id to metadata object
+        vcf_reader.metadata['genome_id'] = genome_id
 
-    logger.info('Added genome_id to VCF reader metadata')
+        logger.info('Added genome_id to VCF reader metadata')
 
-    return vcf_reader
+        return vcf_reader
+    
+    except Exception as e:
+        logger.error(f'Error importing VCF file: {vcf_filepath}')
+        logger.error(f'Error: {e}')
+
+        return None    # how will the app will handle downstream?
 
 
 def check_unique_constaints(table: str, cols: list) -> list:
