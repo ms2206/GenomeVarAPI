@@ -1,0 +1,73 @@
+<p>Technical Documentation is best viewed from GitHub. See
+<a hfre='https://github.com/ms2206/GenomeVarAPI/tree/main'>https://github.com/ms2206/GenomeVarAPI/tree/main</a>.</p>
+<h2>
+Overview
+</h2>
+<p>The tool comes with an API which is served on
+<code>http://localhost:3000/api/</code> to allows the user to interact
+with the database.</p>
+<p>The server is hosted from <code>src/api/server.js</code> using a
+router defined at <code>src/api/routes/router.js</code>. The tool
+assumes node and nmp are installed, if not follow the set up
+instructions on the nodesource
+<a href='https://github.com/nodesource/distributions'>GitHub</a>. To
+verify the installation, run the following commands:</p>
+<pre><code># check node exists
+node -v
+npm -v</code></pre>
+<p>The standard installation via <code>./src/entrypoint.sh</code> will
+run <code>npm install</code> for you.</p>
+<p>There is a useful option to run <code>./src/entrypoint.sh
+–server-only</code> if you have already populated the database and you
+just want to interact with the API. This option means you don’t have to
+reload the database each time.</p>
+<h2>
+Endpoints
+</h2>
+<p>The <a href='./user_guide.md'>User Documentation</a> does a good job
+explaining how to interact with the endpoints, so refer to this page for
+interacting with the links.</p>
+<p>This section will discuss design choices of some of the
+endpoints.</p>
+<p><code>api/genomes</code> This endpoint is useful to see at a glance
+what genomes you have in the database. It returns a simple list of
+dictionaries with the genome_id key. I envision it being used to first
+get the genomes and then calling some of the other endpoints. e.g. </p>
+<pre><code>#!/bin/python
+import requests
+
+url=&#39;http://localhost:3000/api/genomes&#39;
+headers = {&#39;accept&#39;: &#39;application/json&#39;}
+response = requests.get(url, headers=headers)
+
+json = response.json()
+
+for genome in json[&#39;genome_id&#39;]:
+    print(genome)</code></pre>
+<li>
+<code>api/genomes/:genome_id</code>
+</li>
+<p>This end point will list metadata from a given VCF in database. This
+is useful if the user wants to inspect the high-level information about
+the file. It returns a list of dictionaries, with a ‘metadata_json’ key.
+Inside this key is a JSON object with data on fileformats,
+samtoolsVersions, any annotations and reference geneome used.</p>
+<h2>
+Documentation
+</h2>
+<ul>
+<li>
+<a href='./user_guide.md'>User Documentation</a>
+</li>
+<li>
+<a href='./database_technical_docs.md'>Database Technical
+Documentation</a>
+</li>
+<li>
+<a href='./parse_vcf_technical_docs.md'>VCF Parser Technical
+Documentation</a>
+</li>
+<li>
+<a href='./server_technical_docs.md'>API Technical Documentation</a>
+</li>
+</ul>
