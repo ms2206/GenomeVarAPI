@@ -49,7 +49,7 @@ will not be entered into the database</em><br><br>
 
 
 Flowchart for entrypoint.sh: <br>
-<img src='./figures/entrypoint.svg' alt='Flowchart of entrypoint.sh'>
+<img src='docs/figures/entrypoint.svg' alt='Flowchart of entrypoint.sh'>
 
 <i>TODO: Add docker image. use ./src/entrypoint.sh as a wrapper.</i>
 
