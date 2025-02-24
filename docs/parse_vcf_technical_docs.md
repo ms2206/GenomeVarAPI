@@ -79,6 +79,80 @@ def get_vcf_files(dir: str = './data/raw'):
     """
 ```
 
+```
+def import_vcf(vcf_filepath: str) -> vcf.Reader:
+    """
+    Import a VCF file and return a vcf.Reader object with the genome_id added to the metadata object.
+    param vcf_filepath: str: path to the VCF file
+    return: vcf.Reader: vcf.Reader object
+    """
+```
+
+```
+def check_unique_constaints(table: str, cols: list) -> list:
+    """
+    Function to pass in a table and a list of columns from db_vcf and return the UNIQUE rows.
+
+    param table: str: table name
+    param cols: list: column names
+    
+    return: list: list of tuples of unique values in the column
+    """
+```
+
+```
+def make_chromosome_index(chr_index: dict, record: vcf.model._Record, metadata: dict) -> dict:
+    """
+    Make an index of the start and end positions for each chromosome in the VCF file.
+
+    param chr_index: dict: dictionary with geneome_id + chromosome as key and start and end positions as values.
+    param record: vcf.model._Record: record from VCF object.
+    param metadata: dict: metadata object from the VCF file
+    return: dict: dictionary with chromosome_id as key and start and end positions as values.
+    """
+```
+
+```
+def load_chromosomes_table(record: vcf.model._Record, metadata: dict) -> None:
+    """
+    Load the CHROMOSOMES table from records in the VCF file. 
+    note: start and end positions are committed in this function but may be updated later in the process.
+
+    param record: vcf.model._Record: record from VCF object.
+    param metadata: dict: metadata object from the VCF file
+    """
+```
+
+```
+def update_chromosomes_start_end_positions(chr_index: dict) -> None:
+    """
+    Update the CHROMOSOMES table with the start and end positions from the chromosome index.
+    note: chr_index is only accurate after all records have been processed.
+
+    param chr_index: dict: dictionary with chromosome_id as key and start and end positions as values.
+
+    """
+```
+
+```
+def load_genomes_table(metadata: dict) -> None:
+    """
+    Load the GENOMES table from records in the VCF file.
+
+    param metadata: dict: metadata object from the VCF file
+    """
+```
+
+```
+def load_variants_table(record: vcf.model._Record, line_number) -> None:
+    """
+    Load the VARIANTS table from records in the VCF file.
+
+    param record: vcf.model._Record: record from VCF object.
+    """
+```
+
+
 
 <h2>Documentation</h2>
 <ul>
