@@ -43,18 +43,19 @@ grep "WARNING" src/utils/parse_vcf.log
 
 Python was chosen as the language of choice for this module, in part because there exist existing libraires to parse VCF files. pysam and pyvcf were considered for this tool. pyvcf was chosen for it's lightweight simplicity. Additionally, Python was preferred over a fully integrated JavaScript front-end/back-end solution due to the developers' greater proficiency with Python.
 
-The tool as it stands represent MPV (minimul viable product) meeting user needs assigned in the <a href='../I-BIX-DAT Assignment Brief 2025-1.pdf'>Design Brief</a>
+The tool as it stands represent MPV (minimul viable product) meeting user needs as assigned in the <a href='../I-BIX-DAT Assignment Brief 2025-1.pdf'>Design Brief</a>. There exist known limitions which will be discussed below.
+
+<h5>Use of RegEx</h5>
+Parts of the python tool over-rely on RegEx to extract information, especially from the INFO column from the VCF. This limits the tools ability to call annotations. The current release supports parsing VCF files annotated using SnpEff legacy 'EFF' format. The 'ANN' is not yet supported but will be made avaliable in a future release. Considering gene annotations, the tool is limited to extracting gene names for 'mRNA' labeled genes, a future release will expand on these capabilities. <br><em>Note: if your annotations do not follow this format the tool should still complete but their annotations and gene names.
+
+<h5>Use of JSON in the database</h5>
+The tool uses JSON to dump some of the more complex data structures from the VCF object. Future releases will handle parsing the INFO, GENOTYPE, and METADATA objects to flatten these structures and provide the user with better access to this data. This was a conscious decision to balance time and effort when developing MVP.
+
+<h5>Duplication of VCF files</h5>
+The `load_variants_table` generates a unique primary on import, which means there is no pre-existing check to test if this variant has alread been added. If the user adds a duplicate VCF file into <code>./data.raw</code> then the `genomes` table and `chromosomes` tables <u>will <b>not</b></u> be updated - since these tables have a unique constains check imposed - but the variants <u>will be</u> added to the database, causing the SNP/INDEL endpoints to be inaccurate. This is a known <i>feature (😉)</i> and will be fixed in a furture release. For now, don't add duplicate files...
 
 
-
-why was python chosen instead of just a js application, design choice
-
-limitations of ReGex:: two regex queries offer limitaions EFF (what is ANN or other)mRNA what if not mRNA gene
-
-GENOTYPES is poorly formatted
-
-
-if you add same vcf file to /data/raw it will likely update varients table -- look like duplicated SNPs and INDELs
+if you add same vcf file to /data/raw it will update varients table -- look like duplicated SNPs and INDELs
 
 <h2>Documentation</h2>
 <ul>
