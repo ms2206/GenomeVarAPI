@@ -446,23 +446,30 @@ def main():
 
         for record in vcf_file:
 
-            # Log the line number of the current record
-            line_number += 1
-            logger.info(f'Processing record at line number: {line_number}')
+            try:
 
-            # create chromosome index specific to the vcf file
-            chr_index = make_chromosome_index(chr_index, record, vcf_file.metadata)
+                # Log the line number of the current record
+                line_number += 1
+                logger.info(f'Processing record at line number: {line_number}')
 
-            # load_chromosomes_table
-            load_chromosomes_table(record, vcf_file.metadata)
-            
-            # load_samples_table
-            load_genomes_table(vcf_file.metadata)
+                # create chromosome index specific to the vcf file
+                chr_index = make_chromosome_index(chr_index, record, vcf_file.metadata)
 
-            # load_variants_table
-            load_variants_table(record, line_number)
+                # load_chromosomes_table
+                load_chromosomes_table(record, vcf_file.metadata)
+                
+                # load_samples_table
+                load_genomes_table(vcf_file.metadata)
 
-            logger.info('Processed record')
+                # load_variants_table
+                load_variants_table(record, line_number)
+
+                logger.info('Processed record')
+
+            except Exception as e:
+                logger.error(f'Error processing record at line number: {line_number}')
+                logger.error(f'Error: {e}')
+                continue
 
         # update start and end positions in CHROMOSOMES table
         update_chromosomes_start_end_positions(chr_index) # all records have been processed by this point

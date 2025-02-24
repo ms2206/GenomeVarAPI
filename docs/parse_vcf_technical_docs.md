@@ -56,6 +56,11 @@ The <code>load_variants_table</code> generates a unique primary on import, which
 
 Until then, don't add duplicate files... 
 
+<h2>Logging</h2>
+The tool is set up with detailed logs which can be inspected to understand the actions taken. Furture revision would revise the name of the log file to include a timestamp, currently the logs are over-written each time. 
+
+The app would benifit from unitTests and improved try::execpt blocks. This release may not be as stable as would be expected of a production application.
+
 <h2>Functions and Design Flow</h2>
 <img src='./figures/parser_workflow.svg' alt='Flowchart of parser_workflow'>
 
