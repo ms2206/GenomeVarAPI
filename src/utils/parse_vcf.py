@@ -97,7 +97,9 @@ def import_vcf(vcf_filepath: str) -> vcf.Reader:
         logger.error(f'Error importing VCF file: {vcf_filepath}')
         logger.error(f'Error: {e}')
 
-        return None    # how will the app will handle downstream?
+    # Log the error and continue processing the next file
+    logger.error(f'Skipping file due to import error: {vcf_filepath}')
+    return None    # how will the app will handle downstream?
 
 
 def check_unique_constaints(table: str, cols: list) -> list:
