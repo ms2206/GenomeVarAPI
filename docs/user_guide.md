@@ -1,6 +1,6 @@
 <h1>GenomeVarAPI User Guide </h1>
 
-Technical Documentation is best viewed from GitHub. See <a hfre='https://github.com/ms2206/GenomeVarAPI/tree/main'>https://github.com/ms2206/GenomeVarAPI/tree/main</a>.
+Technical Documentation is best viewed from GitHub. See <a href='https://github.com/ms2206/GenomeVarAPI/tree/main'>https://github.com/ms2206/GenomeVarAPI/tree/main</a>.
 
 <h2>Overview</h2>
 <div id='overveiw-section'>
@@ -113,5 +113,9 @@ The API has 8 main endpoints:
 </ul>
 
 <h3> Support and Feedback</h3>
+Support Email: matspriggs@gmail.com
+For general inquiries and technical support.
 
-parse_vcf_technical_docs
+Social Media:
+
+<a href="https://www.linkedin.com/in/matthew-spriggs-324215121/"?>LinkedIn</a>
