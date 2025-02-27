@@ -114,7 +114,7 @@ The API has 8 main endpoints:
 
 <h3> Support and Feedback</h3>
 <b>Support Email</b>:<br>
-For general inquiries and technical support contact: <em>matspriggs@gmail.com</em><br>
+For general inquiries and technical support contact: <em>matspriggs@gmail.com</em><br><br>
 
 <b>Social Media</b>:<br>
 <a href='https://www.linkedin.com/in/matthew-spriggs-324215121/'>LinkedIn</a><br>
