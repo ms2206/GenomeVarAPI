@@ -1,6 +1,6 @@
 <h1>VCF Parser Technical Documentation</h1>
 
-Technical Documentation is best viewed from GitHub. See <a hfre='https://github.com/ms2206/GenomeVarAPI/tree/main'>https://github.com/ms2206/GenomeVarAPI/tree/main</a>.
+Technical Documentation is best viewed from GitHub. See <a href='https://github.com/ms2206/GenomeVarAPI/tree/main'>https://github.com/ms2206/GenomeVarAPI/tree/main</a>.
 
 <h2>Overview</h2>
 One of the core features of this tool as a VCF parser written in python `src/utils/parse_vcf.py`.
