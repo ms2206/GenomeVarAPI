@@ -111,5 +111,8 @@ The API has 8 main endpoints:
 </ul>
 
 <h3> Support and Feedback</h3>
+<b>Support Email</b>:<br>
+For general inquiries and technical support contact: <em>matspriggs@gmail.com</em><br><br>
 
-parse_vcf_technical_docs
+<b>Social Media</b>:<br>
+<a href='https://www.linkedin.com/in/matthew-spriggs-324215121/'>LinkedIn</a><br>
