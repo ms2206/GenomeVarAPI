@@ -118,4 +118,4 @@ For general inquiries and technical support.
 
 Social Media:
 
-<a href="https://www.linkedin.com/in/matthew-spriggs-324215121/"?>LinkedIn</a>
+<a href='https://www.linkedin.com/in/matthew-spriggs-324215121/'>LinkedIn</a>
