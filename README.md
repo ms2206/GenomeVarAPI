@@ -1,7 +1,7 @@
 <h1>GenomeVarAPI User Guide </h1>
 
 <h2>Overview</h2>
-<div id='overveiw-section'>
+<div id='overview-section'>
 
 GenomeVarAPI is a linux-based tool for parsing and interacting with VCF (Variant Call Format) files.
 The tool has 3 elements: a python parsing module, an sqlite database, and a REST API for end-user interface.
@@ -45,8 +45,8 @@ Flowchart for entrypoint.sh: <br>
 
 
 <h3>Adding VCF files</h3>
-Any VCF files placed in the <code>./data.raw</code> directory will be parsed by the tool upon initalization. The current release supports
-parsing VCF files annotated using SnpEff legacy 'EFF' format. The 'ANN' is not yet supported but will be made avaliable in a future release.
+Any VCF files placed in the <code>./data.raw</code> directory will be parsed by the tool upon initialization. The current release supports
+parsing VCF files annotated using SnpEff legacy 'EFF' format. The 'ANN' is not yet supported but will be made available in a future release.
 Considering gene annotations, the tool is limited to extracting gene names for 'mRNA' labeled genes, a future release will expand on these capabilities. <br><em>Note: if your annotations do not follow this format the tool should still complete but their annotations and gene names
 will not be entered into the database</em><br><br>
 
@@ -96,7 +96,7 @@ The API has 8 main endpoints:
 <li>List genomes which contains a variant that impacts a specific gene.</li>
 <code>http://localhost:3000/api/variants/gene/Solyc03g006480.1.1</code><br><br>
 
-<li>List vartiants from a specific genome.</li>
+<li>List variants from a specific genome.</li>
 <code>http://localhost:3000/api/variants/RF_041</code><br><br>
 </ol>
 </div>
