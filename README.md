@@ -40,16 +40,16 @@ starts the Node.js server. <br>
 The <code>--server-only</code> option is useful if you just want to load the server without re-populating the database. This option assumes
 node the node packages are already installed. <br>
 
+Flowchart for entrypoint.sh: <br>
+<img src='docs/figures/entrypoint.svg' alt='Flowchart of entrypoint.sh'>
+
+
 <h3>Adding VCF files</h3>
 Any VCF files placed in the <code>./data.raw</code> directory will be parsed by the tool upon initalization. The current release supports
 parsing VCF files annotated using SnpEff legacy 'EFF' format. The 'ANN' is not yet supported but will be made avaliable in a future release.
 Considering gene annotations, the tool is limited to extracting gene names for 'mRNA' labeled genes, a future release will expand on these capabilities. <br><em>Note: if your annotations do not follow this format the tool should still complete but their annotations and gene names
 will not be entered into the database</em><br><br>
 
-
-
-Flowchart for entrypoint.sh: <br>
-<img src='docs/figures/entrypoint.svg' alt='Flowchart of entrypoint.sh'>
 
 <i>TODO: Add docker image. use ./src/entrypoint.sh as a wrapper.</i>
 
