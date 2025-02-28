@@ -1,5 +1,7 @@
 <h1>GenomeVarAPI User Guide </h1>
 
+Technical Documentation is best viewed from GitHub. See <a href='https://github.com/ms2206/GenomeVarAPI/tree/main'>https://github.com/ms2206/GenomeVarAPI/tree/main</a>.
+
 <h2>Overview</h2>
 <div id='overview-section'>
 
@@ -9,14 +11,16 @@ The tool has 3 elements: a python parsing module, an sqlite database, and a REST
 <em> The tool is not guaranteed to work on Windows PC and makes no claims to be platform independent. </em>
 
 
-<img src='docs/figures/overview.svg' alt='Flowchart of overview'>
+<img src='./figures/overview.svg' alt='Flowchart of overview'>
 
 </div>
 
 
 <h2>Getting Started</h2>
 <div id='getting-started-section'>
-Tool Dependencies: python, node, npm.
+Tool Dependencies: Python, Node.js, npm. Please install these dependencies before running the tool. 
+For assistance refer to: <a href='./server_technical_docs.md'>API Technical Documentation</a>.
+
 <h3>Download the tool</h3>
 
 GitHub clone:
@@ -40,16 +44,16 @@ starts the Node.js server. <br>
 The <code>--server-only</code> option is useful if you just want to load the server without re-populating the database. This option assumes
 node the node packages are already installed. <br>
 
-Flowchart for entrypoint.sh: <br>
-<img src='docs/figures/entrypoint.svg' alt='Flowchart of entrypoint.sh'>
-
-
 <h3>Adding VCF files</h3>
 Any VCF files placed in the <code>./data.raw</code> directory will be parsed by the tool upon initialization. The current release supports
 parsing VCF files annotated using SnpEff legacy 'EFF' format. The 'ANN' is not yet supported but will be made available in a future release.
 Considering gene annotations, the tool is limited to extracting gene names for 'mRNA' labeled genes, a future release will expand on these capabilities. <br><em>Note: if your annotations do not follow this format the tool should still complete but their annotations and gene names
 will not be entered into the database</em><br><br>
 
+
+
+Flowchart for entrypoint.sh: <br>
+<img src='./figures/entrypoint.svg' alt='Flowchart of entrypoint.sh'>
 
 <i>TODO: Add docker image. use ./src/entrypoint.sh as a wrapper.</i>
 
@@ -99,7 +103,6 @@ The API has 8 main endpoints:
 <li>List variants from a specific genome.</li>
 <code>http://localhost:3000/api/variants/RF_041</code><br><br>
 </ol>
-</div>
 </div>
 
 <h2>Documentation</h2>
