@@ -19,7 +19,7 @@ The tool has 3 elements: a python parsing module, an sqlite database, and a REST
 <h2>Getting Started</h2>
 <div id='getting-started-section'>
 Tool Dependencies: Python, Node.js, npm. Please install these dependencies before running the tool. 
-For assistance refer to: <a href='./server_technical_docs.md'>API Technical Documentation</a>.
+For assistance refer to: <a href='docs/server_technical_docs.md'>API Technical Documentation</a>.
 
 <h3>Download the tool</h3>
 
