@@ -135,6 +135,12 @@ Navigate to the local API:<br>
 
 <img src='./figures/count_var.png' alt='count_var boxplot'>
 
+<li>Visualization of chromosome.</li>
+<code>http://127.0.0.1:3001/plot_chromosome?genome_id=&lt;GENOME_ID&gt;</code>
+
+<img src='./figures/chrom_vis.png' alt='chrom_vis_beta'>
+
+
 </ol>
 
 
