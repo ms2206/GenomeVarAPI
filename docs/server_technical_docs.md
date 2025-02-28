@@ -5,7 +5,7 @@ Technical Documentation is best viewed from GitHub. See <a href='https://github.
 <h2>Overview</h2>
 The tool comes with an API which is served on `http://localhost:3000/api/` to allow the user to interact with the database.
 
-The server is hosted from <code>src/api/server.js</code> using a router defined at `src/api/routes/router.js`. The tool assumes node and npm are installed, if not follow the setup instructions on the nodesource <a href='https://github.com/nodesource/distributions'>GitHub</a>. To verify the installation, run the following commands:
+The server is hosted from <code>src/api/server.js</code> using a router defined at `src/api/routes/router.js`. The tool assumes node and npm are installed, if not follow the setup instructions at <a href='https://nodejs.org/en/download'> https://nodejs.org/en/download </a>.<br> To verify the installation, run the following commands:
 
 ```
 # check node exists
