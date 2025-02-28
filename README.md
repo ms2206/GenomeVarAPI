@@ -11,7 +11,7 @@ The tool has 3 elements: a python parsing module, an sqlite database, and a REST
 <em> The tool is not guaranteed to work on Windows PC and makes no claims to be platform independent. </em>
 
 
-<img src='./figures/overview.svg' alt='Flowchart of overview'>
+<img src='./docs/figures/overview.svg' alt='Flowchart of overview'>
 
 </div>
 
@@ -53,7 +53,7 @@ will not be entered into the database</em><br><br>
 
 
 Flowchart for entrypoint.sh: <br>
-<img src='./figures/entrypoint.svg' alt='Flowchart of entrypoint.sh'>
+<img src='./docs/figures/entrypoint.svg' alt='Flowchart of entrypoint.sh'>
 
 <i>TODO: Add docker image. use ./src/entrypoint.sh as a wrapper.</i>
 
@@ -104,6 +104,39 @@ The API has 8 main endpoints:
 <code>http://localhost:3000/api/variants/RF_041</code><br><br>
 </ol>
 </div>
+
+
+<h2>BETA: Plumber API</h2>
+A beta version of an API is available for users to visualize data from their VCF files. This feature is currently in beta release and has been intentionally kept separate from the main API hosted at http://localhost:3000. This decision was made to allow for thorough testing and to ensure the stability of the Plumber API. Once testing is complete, the Plumber API will be integrated into the main server. In the meantime, a separate wrapper can be used to initialize this Plumber server.
+
+<h3>Dependencies:</h3>
+
+R
+
+<h3>Set Up:</h3>
+To start this server:<br>
+<code>Rscript src/utils/wrapper_plummer.R src/api/plumber_API.R</code><br>
+
+Navigate to the Swagger API:<br>
+<code>http://127.0.0.1:3001/&#95;&#95;docs/&#95;&#95;</code>
+
+OR
+
+Navigate to the local API:<br>
+<code>Running plumber API at http://127.0.0.1:3001</code>
+
+<h3>Plumber Endpoints:</h3>
+
+<ol>
+<li>Barplot of count of variant per genome.</li>
+
+<code>http://127.0.0.1:3001/count_variants?genome_id=&lt;GENOME_ID&gt;</code>
+
+<img src='./docs/figures/count_var.png' alt='count_var boxplot'>
+
+</ol>
+
+
 
 <h2>Documentation</h2>
 <ul>
