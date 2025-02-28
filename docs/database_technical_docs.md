@@ -45,6 +45,11 @@ To find exploratory SQL examples see:<code>src/db/playground.sql</code>
 
 To re-create the ER diagram the file <code>src/db/mysql_schema_for_ER_only.sql</code> can be used. This is the scheme, but written in mysql which is more transportable for ER visualization tool like MySQL Workbench or LucidChart.
 
+
+<h3></h3>
+<em>There is a copy of the database that can be used for testing: </em> <code>src/db/2025-02-22_backup_vcf_df</code>
+
+<br>
 <h2>Documentation</h2>
 <ul>
 <li><a href='./user_guide.md'>User Documentation</a></li>
