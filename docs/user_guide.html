@@ -7,9 +7,10 @@ GenomeVarAPI User Guide
 Overview
 </h2>
 <div id="overview-section">
-<p>GenomeVarAPI is a Linux-based tool for parsing and interacting with
-VCF (Variant Call Format) files. The tool comprises three elements: a 
-Python parsing module, an SQLite database, and a REST API for user interaction</p>
+<p>GenomeVarAPI is a linux-based tool for parsing and interacting with
+VCF (Variant Call Format) files. The tool has 3 elements: a python
+parsing module, an sqlite database, and a REST API for end-user
+interface.</p>
 <p><em> The tool is not guaranteed to work on Windows PC and makes no
 claims to be platform independent. </em></p>
 <p><img src='./figures/overview.svg' alt='Flowchart of overview'></p>
@@ -18,9 +19,10 @@ claims to be platform independent. </em></p>
 Getting Started
 </h2>
 <div id="getting-started-section">
-Tool Dependencies: Python, Node.js, npm. Please install these dependencies before running the tool. 
-For assistance refer to: <a href='./server_technical_docs.md'>API Technical Documentation</a>.
-
+<p>Tool Dependencies: Python, Node.js, npm. Please install these
+dependencies before running the tool. For assistance refer to:
+<a href='./server_technical_docs.md'>API Technical
+Documentation</a>.</p>
 <h3>
 Download the tool
 </h3>
@@ -33,11 +35,11 @@ Download the tool
 <p>Description: This script acts as a wrapper to start the application.
 The script checks if the required python environment exists, if not, it
 creates the environment. It then initializes the SQLite database, parses
-VCF files, installs the Node.js dependencies and starts the Node.js server.
+VCF files, installs the node dependencies and starts the Node.js server.
 <br></p>
 <p>The <code>–server-only</code> option is useful if you just want to
 load the server without re-populating the database. This option assumes
-Node.js the dependencies are already installed. <br></p>
+node the node packages are already installed. <br></p>
 <h3>
 Adding VCF files
 </h3>
@@ -52,7 +54,7 @@ format the tool should still complete but their annotations and gene
 names will not be entered into the database</em><br><br></p>
 <p>Flowchart for entrypoint.sh: <br>
 <img src='./figures/entrypoint.svg' alt='Flowchart of entrypoint.sh'></p>
-<p><i>TODO: Add Docker image. use ./src/entrypoint.sh as a
+<p><i>TODO: Add docker image. use ./src/entrypoint.sh as a
 wrapper.</i></p>
 </div>
 <h2>
@@ -130,6 +132,41 @@ List variants from a specific genome.
 </ol>
 </div>
 </div>
+<h2>
+BETA: Plumber API
+</h2>
+<p>A beta version of an API is available for users to visualize data
+from their VCF files. This feature is currently in beta release and has
+been intentionally kept separate from the main API hosted at
+http://localhost:3000. This decision was made to allow for thorough
+testing and to ensure the stability of the Plumber API. Once testing is
+complete, the Plumber API will be integrated into the main server. In
+the meantime, a separate wrapper can be used to initialize this Plumber
+server.</p>
+<h3>
+Dependencies:
+</h3>
+<p>R</p>
+<h3>
+Set Up:
+</h3>
+<p>To start this server:<br> <code>Rscript src/utils/wrapper_plummer.R
+src/api/plumber_API.R</code><br></p>
+<p>Navigate to the Swagger API:<br>
+<code>http://127.0.0.1:3001/__docs/__</code></p>
+<p>OR</p>
+<p>Navigate to the local API:<br> <code>Running plumber API at
+http://127.0.0.1:3001</code></p>
+<h3>
+Plumber Endpoints:
+</h3>
+<ol>
+<li>
+Barplot of count of variant per genome.
+</li>
+<p><code>http://127.0.0.1:3001/count_variants?genome_id=&lt;GENOME_ID&gt;</code></p>
+<p><img src='./figures/count_var.png' alt='count_var boxplot'></p>
+</ol>
 <h2>
 Documentation
 </h2>
