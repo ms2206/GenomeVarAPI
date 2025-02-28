@@ -2,15 +2,14 @@
 GenomeVarAPI User Guide
 </h1>
 <p>Technical Documentation is best viewed from GitHub. See
-<a hfre='https://github.com/ms2206/GenomeVarAPI/tree/main'>https://github.com/ms2206/GenomeVarAPI/tree/main</a>.</p>
+<a href='https://github.com/ms2206/GenomeVarAPI/tree/main'>https://github.com/ms2206/GenomeVarAPI/tree/main</a>.</p>
 <h2>
 Overview
 </h2>
-<div id="overveiw-section">
-<p>GenomeVarAPI is a linux-based tool for parsing and interacting with
-VCF (Variant Call Format) files. The tool has 3 elements: a python
-parsing module, an sqlite database, and a REST API for end-user
-interface.</p>
+<div id="overview-section">
+<p>GenomeVarAPI is a Linux-based tool for parsing and interacting with
+VCF (Variant Call Format) files. The tool comprises three elements: a 
+Python parsing module, an SQLite database, and a REST API for user interaction</p>
 <p><em> The tool is not guaranteed to work on Windows PC and makes no
 claims to be platform independent. </em></p>
 <p><img src='./figures/overview.svg' alt='Flowchart of overview'></p>
@@ -19,7 +18,7 @@ claims to be platform independent. </em></p>
 Getting Started
 </h2>
 <div id="getting-started-section">
-Tool Dependencies: python, node, npm.
+Tool Dependencies: Python, Node.js, npm.
 <h3>
 Download the tool
 </h3>
@@ -32,18 +31,18 @@ Download the tool
 <p>Description: This script acts as a wrapper to start the application.
 The script checks if the required python environment exists, if not, it
 creates the environment. It then initializes the SQLite database, parses
-VCF files, installs the node dependencies and starts the Node.js server.
+VCF files, installs the Node.js dependencies and starts the Node.js server.
 <br></p>
 <p>The <code>–server-only</code> option is useful if you just want to
 load the server without re-populating the database. This option assumes
-node the node packages are already installed. <br></p>
+Node.js the dependencies are already installed. <br></p>
 <h3>
 Adding VCF files
 </h3>
 <p>Any VCF files placed in the <code>./data.raw</code> directory will be
-parsed by the tool upon initalization. The current release supports
+parsed by the tool upon initialization. The current release supports
 parsing VCF files annotated using SnpEff legacy ‘EFF’ format. The ‘ANN’
-is not yet supported but will be made avaliable in a future release.
+is not yet supported but will be made available in a future release.
 Considering gene annotations, the tool is limited to extracting gene
 names for ‘mRNA’ labeled genes, a future release will expand on these
 capabilities. <br><em>Note: if your annotations do not follow this
@@ -51,7 +50,7 @@ format the tool should still complete but their annotations and gene
 names will not be entered into the database</em><br><br></p>
 <p>Flowchart for entrypoint.sh: <br>
 <img src='./figures/entrypoint.svg' alt='Flowchart of entrypoint.sh'></p>
-<p><i>TODO: Add docker image. use ./src/entrypoint.sh as a
+<p><i>TODO: Add Docker image. use ./src/entrypoint.sh as a
 wrapper.</i></p>
 </div>
 <h2>
@@ -123,7 +122,7 @@ List genomes which contains a variant that impacts a specific gene.
 </li>
 <p><code>http://localhost:3000/api/variants/gene/Solyc03g006480.1.1</code><br><br></p>
 <li>
-List vartiants from a specific genome.
+List variants from a specific genome.
 </li>
 <code>http://localhost:3000/api/variants/RF_041</code><br><br>
 </ol>
@@ -151,4 +150,7 @@ Documentation</a>
 <h3>
 Support and Feedback
 </h3>
-<p>parse_vcf_technical_docs</p>
+<p><b>Support Email</b>:<br> For general inquiries and technical support
+contact: <em>matspriggs@gmail.com</em><br><br></p>
+<p><b>Social Media</b>:<br>
+<a href='https://www.linkedin.com/in/matthew-spriggs-324215121/'>LinkedIn</a><br></p>
